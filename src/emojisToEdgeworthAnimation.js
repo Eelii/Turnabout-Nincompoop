@@ -18,7 +18,7 @@ function emojisToEdgeworthAnimation(emoji1, messageReadyState){
             return "pointingTalking"
         }
         else if(emoji1=="😏"){
-            return "smirkTalking"
+            return "confidentTalking"
         }
         else if(emoji1=="😠" || emoji1=="😣" || emoji1=="😡" || emoji1=="😤"){
             return "handondeskTalking"
@@ -45,7 +45,7 @@ function emojisToEdgeworthAnimation(emoji1, messageReadyState){
             return "handondesk"
         }
         else if(emoji1=="😏" || emoji1=="😉"){
-            return "smirk"
+            return "confident"
         }
         else if(emoji1=="😣"){
             return "handondesk"

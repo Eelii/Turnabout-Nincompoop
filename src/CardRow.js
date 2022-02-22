@@ -51,7 +51,7 @@ const postItColors = {
   4:"#fff740" // dark yellow
 }
 
-const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards}) =>{
+const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDroppedText}) =>{
     //const randomColorNum = Math.floor(Math.random() * 5)
     //const randomMarginNum = Math.floor(Math.random() * 40) + 5;
     //const randomRotateNum = Math.floor(Math.random() * (5+5) - 5)
@@ -72,9 +72,9 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards}) =>{
           //console.log(state)
           if(state.xy[1] < 310){
             // TODO: +text
-            setCardStyle({...cardStyle, visibility:"hidden"})
-            console.log(cardStyle)
-            setTimeout(()=>{setCards(cards.filter((item) => (item.rotateNum !== rotateNum)))}, 1000)
+            //setCardStyle({...cardStyle, visibility:"hidden"})
+            setCardDroppedText(text)
+            setTimeout(()=>{setCards(cards.filter((item) => (item.text != text)))}, 1000)
 
           }
         }
@@ -92,79 +92,18 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards}) =>{
     )
 }
 
-/*
-const CardHovering = ({text}) =>{
-    
-    const calcX = (y, ly) => -(y - ly - window.innerHeight / 2) / 20
-    const calcY = (x, lx) => (x - lx - window.innerWidth / 2) / 20
-    const target = useRef(null)
-    const [{ x, y, rotateX, rotateY }, api] = useSpring(
-        () => ({
-        rotateX: 0,
-        rotateY: 0,
-        x: 0,
-        y: 0,
-        config: { mass: 5, tension: 350, friction: 40 },
-        })
-    )
-  
 
-useEffect(() => {
-    const preventDefault = (e) => e.preventDefault()
-    document.addEventListener('gesturestart', preventDefault)
-    document.addEventListener('gesturechange', preventDefault)
-
-    return () => {
-      document.removeEventListener('gesturestart', preventDefault)
-      document.removeEventListener('gesturechange', preventDefault)
-    }
-  }, [])
-
-  useGesture(
-    {
-      onDrag: ({ active, offset: [x, y] }) =>
-        api({ x, y, rotateX: 0, rotateY: 0, scale: active ? 1 : 1.1 }),
-      onMove: ({ xy: [px, py], dragging }) =>
-        !dragging &&
-        api({
-          rotateX: calcX(py, y.get()),
-          rotateY: calcY(px, x.get()),
-          scale: 1.1,
-        }),
-      onHover: ({ hovering }) =>
-        !hovering && api({ rotateX: 0, rotateY: 0, scale: 1 }),
-    },
-    { target, eventOptions: { passive: false } }
-  )
-
-  return (
-    <div>
-      <animated.div
-        ref={target}
-        style={{...styles.card, 
-          transform: 'perspective(600px)',
-          x,
-          y,
-          rotateX,
-          rotateY,
-        }}>
-            <p>{text}</p>
-      </animated.div>
-    </div>
-  )
-}
-*/
-const getCard = (card, cards, setCards) => {
-  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards}></Card>)
+const getCard = (card, cards, setCards, setCardDroppedText) => {
+  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText}></Card>)
 }
 
-function CardRow({cards, setCards}){
+function CardRow({cards, setCards, setCardDroppedText}){
 
   
     return(
       <div>
         <div style={{display:"flex", flexDirection:"row", }}>
-            {cards.map(card =>(getCard(card, cards, setCards)))}
+            {cards.map(card =>(getCard(card, cards, setCards, setCardDroppedText)))}
         </div>
       </div>
     )

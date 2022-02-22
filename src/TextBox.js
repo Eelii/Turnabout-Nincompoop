@@ -21,10 +21,9 @@ const styles = {
         left: "23%"
     },
     nextMsgBtn:{
-        width: 20, 
-        height: 20, 
-        backgroundColor:"yellow",
-        right: 20,
+        width: 60, 
+        height: 50, 
+        right: 0,
         top: 60,
         position: "absolute"
     },
@@ -58,10 +57,32 @@ const styles = {
         fontSize: 15,
         marginTop: 3,
     },
+    messageText:{
+        position:"absolute",
+        left: 10,
+        bottom:0,
+        width: "90%",
+        height: "70%"
+    }
     
 }
 
-function TextBox({messages, setPhoenixAnim, phoenixAnim, setEdgeworthAnim, edgeworthAnim, setJudgeAnim, judgeAnim, currentMessageIndex, setCurrentMessageIndex, phoenixAnimForce, setPhoenixAnimForce, edgeworthAnimForce, objectionModeOn, fetchingMessage}){
+function TextBox({
+        messages,
+        setPhoenixAnim, 
+        phoenixAnim, 
+        setEdgeworthAnim, 
+        edgeworthAnim, 
+        setJudgeAnim, 
+        judgeAnim, 
+        currentMessageIndex, 
+        setCurrentMessageIndex, 
+        phoenixAnimForce, 
+        setPhoenixAnimForce, 
+        edgeworthAnimForce, 
+        objectionModeOn, 
+        fetchingMessage
+    }){
 
     const [messageReady, setMessageReady] = useState(false)
     const nextMessageIndex = () =>{
@@ -70,7 +91,8 @@ function TextBox({messages, setPhoenixAnim, phoenixAnim, setEdgeworthAnim, edgew
     const currentMessage = messages[currentMessageIndex]
     if (currentMessage.character == "phoenix"){
         if (!phoenixAnimForce){
-            setPhoenixAnim(emojisToPhoenixAnimation(currentMessage.emoji_1.emoji, messageReady))
+            console.log(`CURRENT ANIM: TOP: ${phoenixAnim}`)
+            setPhoenixAnim(emojisToPhoenixAnimation(currentMessage.emoji_1.emoji, messageReady, objectionModeOn, phoenixAnim))
         } 
     }
     else if(currentMessage.character == "edgeworth" && !edgeworthAnimForce){
@@ -82,14 +104,17 @@ function TextBox({messages, setPhoenixAnim, phoenixAnim, setEdgeworthAnim, edgew
     
     const renderMsgBtn = () =>{
         if(currentMessageIndex < messages.length-1 && messageReady==true){
-            return(<div style={styles.nextMsgBtn} 
-                onClick={()=>{
-                    nextMessageIndex()
-                    setMessageReady(false)
-                    if(phoenixAnimForce == true){
-                        setPhoenixAnimForce(false)
-                    }
-                }}></div>)
+            return( <div style={styles.nextMsgBtn} 
+                        onClick={()=>{
+                            nextMessageIndex()
+                            setMessageReady(false)
+                            if(phoenixAnimForce == true){
+                                setPhoenixAnimForce(false)
+                        }}}>
+                        <div className="arrowsDiv">
+                            <div className="arrowFirst"></div>
+                        </div>
+                    </div>)
         } 
         else if(currentMessageIndex < messages.length-1 && messageReady==false){
             return(<div style={styles.nextMsgBtn}></div>)
@@ -111,7 +136,7 @@ function TextBox({messages, setPhoenixAnim, phoenixAnim, setEdgeworthAnim, edgew
     const renderFetchingMessage = () => {
         if (fetchingMessage){
             return(
-                <div style={{position: "absolute", top: "30%", left:"2%"}}>
+                <div style={{position: "absolute", top: "30%", left:"2%", zIndex: 100, left: -30}}>
                     <ReactLoading color="black" type="bars" height={20} width={20}></ReactLoading>
                 </div>
             )
@@ -126,7 +151,7 @@ function TextBox({messages, setPhoenixAnim, phoenixAnim, setEdgeworthAnim, edgew
         <div style={styles.textBox}>
             {renderCharacterNameBox()}
             {renderFetchingMessage()}
-            <div style={{position:"absolute", left:110, top: 30}}>
+            <div style={styles.messageText}>
                 <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn}></Message>
                 <p>
                     {messages[currentMessageIndex].emoji_1.emoji}

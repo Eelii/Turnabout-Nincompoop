@@ -85,3 +85,80 @@
   color: "goldenrod"
 }
 
+.arrowFirst {
+  position: absolute;
+  border: solid black;
+  border-width: 0 5px 5px 0;
+  display: inline-block;
+  padding: 5px;
+  height: 3px;
+  width: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+.arrowSecond{
+  position: absolute;
+  border: solid black;
+  border-width: 0 5px 5px 0;
+  display: inline-block;
+  padding: 5px;
+  height: 3px;
+  width: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-left: 10px;
+  z-index: 10;
+}
+
+.arrowsDiv{
+  position: absolute;
+  height: 30px;
+  width: 50px;
+  animation-name: arrowAnim;
+  animation-duration: 0.5s;
+  right: 0;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in;
+}
+
+.arrowsDiv:hover{
+  cursor:pointer;
+}
+
+@keyframes arrowAnim {
+from {left:0px;}
+to {left:5px;}
+}
+
+.volumeSlider{
+  width: 10px;
+  height: 100px;
+  background-color: goldenrod;
+  border-style: solid;
+  border-color: black;
+  border-radius: 3px;
+  border-width: 1px;
+}
+.volumeSlider-thumb{
+  width: 40px;
+  height: 20px;
+  background-color: limegreen;
+  left: -15px;
+  border-radius: 20px;
+  text-align: center;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  font-size: 10px;
+}
+
+.volumeSlider-thumb:hover{
+  cursor:grab;
+  background: linear-gradient(90deg, limegreen, rgb(42, 185, 42));
+
+}
+.volumeSlider-track{
+  height: 100px;
+}
+

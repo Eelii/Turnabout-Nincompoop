@@ -1,7 +1,7 @@
-
 import './App.css';
 import React, {useState, useEffect} from "react"
 import useSound from 'use-sound';
+import ReactSlider from 'react-slider';
 import cornered2 from "./sounds/cornered2.mp3"
 import objectionSoundPhoenix from "./sounds/objection_phoenix.mp3"
 import DefenceView from './DefenceView';
@@ -17,17 +17,21 @@ import handleResponse from './handleResponse';
 import handleKeyPressEvent from './handleKeyPressEvent';
 import handleScore from './handleScore';
 import objectionBubble from "./anims/objection.gif"
+import gavel from "./anims/gavel.gif"
+import gavelSound from "./sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
 import deskslamSound from "./sounds/sfx-deskslam.wav"
 
-function App() {
 
+function App() {
+  const URL = "http://88.115.45.196:5000"
   const TESTRESPONSE = {sentence:"start", character:"phoenix", emoji_1:{emoji:"haha"}, emoji_2:{emoji:"hihi"}, emoji_3:{emoji:"hehe"}}
   const [phoenixAnim, setPhoenixAnim] = useState("normal")
-  const [edgeworthAnim, setEdgeworthAnim] = useState("normal")
   const [phoenixAnimForce, setPhoenixAnimForce] = useState(false)
+  const [edgeworthAnim, setEdgeworthAnim] = useState("normal")
   const [edgeworthAnimForce, setEdgeworthAnimForce] = useState(false)
   const [judgeAnim, setJudgeAnim] = useState("normal")
+  const [judgeAnimForce, setJudgeAnimForce] = useState(false)
   const [gif, setGif] = useState(0)
   const [cards, setCards] = useState([])
   const [messageReady, setMessageReady] = useState(true)
@@ -41,28 +45,37 @@ function App() {
   const [edgeworthScore, setEdgeworthScore] = useState(1)
   const [blackout, setBlackout] = useState(false)
   const [objectionForm, setObjectionForm] = useState(false)
+  const [objectionFormText, setObjectionFormText] = useState("")
+  const [promptForm, setPromptForm] = useState(false)
+  const [promptFormText, setPromptFormText] = useState("")
   const [objectionBubbleVisible, setObjectionBubbleVisible] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
   const [fetchingMessage, setFetchingMessage] = useState(false)
+  const [showGavel, setShowGavel] = useState(false)
+  const [cardDroppedText, setCardDroppedText] = useState("")
 
   const [test, setTest] = useState([])
 
-  const [playCornered2, { stop }] = useSound(cornered2, {volume:0.5});
-  const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume:0.5})
-  const [playDeskslamSound, {stopDeskslamSound}] = useSound(deskslamSound, {volume:0.5})
+  const [volume, setVolume] = useState(0)
+  const [playCornered2, { stop }] = useSound(cornered2, {volume});
+  const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume})
+  const [playDeskslamSound, {stopDeskslamSound}] = useSound(deskslamSound, {volume:volume})
+  const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
 
-  const getNewCard = () => {
+  function getNewCard(text){
     const randomColorNum = Math.floor(Math.random() * 5)
     const randomMarginNum = Math.floor(Math.random() * 40) + 5;
     const randomRotateNum = Math.floor(Math.random() * (5+5) - 5);
-    const text = "hello"
     return {text:text, colorNum:randomColorNum, marginNum:randomMarginNum, rotateNum:randomRotateNum}
   }
 
-  const addNewCardToDeck = (card) => {
-    const newCard = getNewCard()
-    setCards((cards)=>([...cards, newCard]))
-  }
+  async function addNewCardsToDeck(cardsAmount){
+    for(let i=0; i<cardsAmount; i++){
+      const response = await fetchCardPrompt()
+      const newCard = getNewCard(response.sentence)
+      setCards((cards)=>([...cards, newCard]))
+    }
+  } 
 
   const styles ={
     mainView:{
@@ -151,7 +164,7 @@ function App() {
       top:"20%",
       width:"40%",
       height:"40%",
-      zIndex:99999999,
+      zIndex:99999,
       backgroundColor:"white",
       borderStyle:"solid",
       borderColor:"saddlebrown",
@@ -172,6 +185,28 @@ function App() {
       top: "20%",
       left: "36%"
     },
+    promptForm:{
+      position:"absolute",
+      left:"30%",
+      top:"20%",
+      width:"40%",
+      height:"40%",
+      zIndex:99999,
+      backgroundColor:"white",
+      borderStyle:"solid",
+      borderColor:"saddlebrown",
+      borderRadius:3,
+      animation:"objectionFormFadeIn",
+      animationDuration:"4s",
+      animationTimingFunction: "linear",
+      justifyContent:"center"
+    },
+    promptFormButton:{
+      width:"28%",
+      height:"100%",
+      backgroundColor:"red",
+      float:"right",
+    },
     timeLeftBar:{
       position: "absolute",
       top: -20,
@@ -179,9 +214,14 @@ function App() {
     }
   }
 
-  async function fetchSentenceSpeaking(character, objectionModeOn=false){
-    const url = "http://192.168.1.7:5000"
-    let response = await fetch(objectionModeOn?`${url}/getresponse/objection?character=${character}`:`${url}/getresponse/speaking?character=${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
+  async function fetchSentenceSpeaking(character, objectionModeOn=false, prompt=false){
+    let response
+    if (prompt == false){
+      response = await fetch(objectionModeOn&character=="phoenix"?`${URL}/getresponse/objection?character=${character}`:`${URL}/getresponse/speaking?character=${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
+    } else{
+      console.log(`Fetching with prompt ${prompt}, objection mode: ${objectionModeOn}`)
+      response = await fetch(objectionModeOn?`${URL}/getresponse/speaking?character=${character}&prompt=${prompt}`:`${URL}/getresponse/speaking?character=${character}&prompt=${prompt}`, {headers:{"Access-Control-Allow-Origin":"*"}})
+    }
     if(response.ok == true){
       return response.json()
     }
@@ -189,13 +229,32 @@ function App() {
   };
 
   async function fetchInSession(character){
-    const url = "http://192.168.1.7:5000"
-    let response = await fetch(`${url}/insession/${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
+    let response = await fetch(`${URL}/insession/${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
     if(response.ok == true){
       return response.json()
     }
   }
 
+  async function fetchVerdict(){
+    let response = await fetch(`${URL}/verdict`)
+    if(response.ok == true){
+      return response.json()
+    }
+  }
+
+  async function fetchAdjourned(){
+    let response = await fetch(`${URL}/adjourned`)
+    if(response.ok == true){
+      return response.json()
+    }
+  }
+
+  async function fetchCardPrompt(){
+    let response = await fetch(`${URL}/getcardprompt`)
+    if(response.ok == true){
+      return response.json()
+    }
+  }
 
   const handleKeyPress = event => {
     const pressedKey = event.key
@@ -211,16 +270,19 @@ function App() {
   useEffect(()=>{
     if(currentMessageIndex > 2){
       handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints)
-      console.log(`MESSAGE: ${messages[currentMessageIndex]}`)
     }
   },[currentMessageIndex])
 
   useEffect(()=>{
-    console.log("MESSAGES")
-    console.log(messages)
-    console.log("TEST")
-    console.log(test)
-  },[messages,test])
+    if(showGavel === true){
+      setJudgeAnimForce(true)
+      setJudgeAnim("warning")
+      setTimeout(()=>{playGavelSound()},200)
+      setTimeout(()=>{setShowGavel(false)}, 1800)
+      setTimeout(()=>{setJudgeAnim("normal");judgeAnimForce(false)},2000)
+    }
+  },[showGavel])
+
 
   useEffect(()=>{
     const currentMessageTmp = messages[currentMessageIndex]
@@ -229,31 +291,43 @@ function App() {
 
   useEffect(()=>{
     window.addEventListener("keydown", handleKeyPress)
-    for (let i = 0; i < 5; i++){
-      addNewCardToDeck()
-    }
+    console.log("ADsf")
+    addNewCardsToDeck(5)
     return()=>{console.log("clean up!")}
   },[])
 
-  async function getMessagesNormal (character, numOfMessages) {
-    console.log(`Objection mode: ${objectionModeOn}`)
+  useEffect(()=>{
+    getMessagesNormal("phoenix", 1, prompt=cardDroppedText)
+  },[cardDroppedText])
+
+  async function getMessagesNormal (character, numOfMessages, prompt=undefined) {
     setFetchingMessage(true)
-    for(let i = 0; i < numOfMessages; i++){
-      let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
-      setMessages((messages)=>([...messages, tmpMsg]))
+    if (prompt == undefined){
+      for(let i = 0; i < numOfMessages; i++){
+        let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
+        setMessages((messages)=>([...messages, tmpMsg]))
+      }
+    } else{
+      for(let i = 0; i < numOfMessages; i++){
+        let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn, prompt=prompt)
+        setMessages((messages)=>([...messages, tmpMsg]))
+      }
     }
     setFetchingMessage(false)
-    console.log(messages)
-    //setMessages(messagesTmp)
   }
 
-  async function getMessagesObjection (character, numOfMessages) {
-    const messagesTmp = []
-    for(let i = 0; i < numOfMessages; i++){
-      let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
-      setMessages((messages)=>([...messages, tmpMsg]))
-    }
-    //setMessages(messagesTmp)
+  async function getVerdict(){
+    setFetchingMessage(true)
+    let verdictMsg = await fetchVerdict()
+    setMessages((messages)=>([...messages, verdictMsg]))
+    setFetchingMessage(false)
+  }
+
+  async function getAdjourned(){
+    setFetchingMessage(true)
+    let adjournedMsg = await fetchAdjourned()
+    setMessages((messages)=>([...messages, adjournedMsg]))
+    setFetchingMessage(false)
   }
 
   async function getCourtStartDialogue(){
@@ -312,10 +386,11 @@ function App() {
     setObjectionModeOn(true)
   }
 
-  function doTheObjection(){
+  function doTheObjection(prompt){
     const max = 4
     const min = 1
     const randomNum = Math.ceil(Math.random()*(max - min) + min);
+    setFetchingMessage(true)
     getMessagesNormal("phoenix", randomNum)
     setPhoenixAnim("handsondesk")
     setObjectionForm(false)
@@ -324,7 +399,7 @@ function App() {
     setTimeout(()=>{setBlackout(false)}, 1800)
     setTimeout(()=>{playCornered2()}, 1600)
     setTimeout(()=>{setObjectionBubbleVisible(false)}, 2200)
-    setTimeout(()=>{stop()}, 50000)
+    //setTimeout(()=>{stop()}, 50000)
   }
 
   const renderBlackout = () => {
@@ -341,8 +416,31 @@ function App() {
     if (objectionForm){
       return(
         <div style={styles.objectionForm}>
-          <input type="text" maxLength={10} style={{width:"80%", display:"flex", float:"left", width:"70%", height:"20%", top:100}}></input>
-          <div style={styles.objectionFormButton} onClick={()=>{doTheObjection()}}>Objection!</div>
+          <input type="text" maxLength={10} onChange={(e)=>(setObjectionFormText(e.target.value))} style={{width:"80%", display:"flex", float:"left", width:"70%", height:"20%", top:100}}></input>
+          <div style={styles.objectionFormButton} 
+            onClick={()=>{
+              doTheObjection(prompt=objectionFormText)
+              setObjectionFormText("")
+            }}>
+              Objection!
+          </div>
+        </div>
+      )
+    }
+  }
+
+  const renderPromptForm = () => {
+    if (promptForm){
+      return(
+        <div style={styles.promptForm}>
+          <input type="text" maxLength={10} onChange={(e)=>(setPromptFormText(e.target.value))} style={{width:"80%", display:"flex", float:"left", width:"70%", height:"20%", top:100}}></input>
+          <div style={styles.promptFormButton} 
+            onClick={()=>{
+              getMessagesNormal("phoenix", 1, promptFormText)
+              setPromptForm(false)
+            }}>
+              ...
+          </div>
         </div>
       )
     }
@@ -358,13 +456,14 @@ function App() {
     }
   }
 
-  const renderFetchingMessage = () => {
-    if (fetchingMessage == true){
-      return <div>TRUE</div>
+  const renderGavel = () => {
+    if(showGavel){
+      return(<img style={{zIndex:1, position:"absolute", top:"30%", height:180, width:200, left:20, top:150}} src={gavel}/>)
     } else{
-      return <div>FALSE</div>
+      return false
     }
   }
+ 
   return (
     <div className="App">
       <div className="mainView" style={styles.mainView}>
@@ -373,6 +472,7 @@ function App() {
         <div className="courtView" style={styles.courtView}>
           {renderBlackout()}
           {renderObjectionForm()}
+          {renderPromptForm()}
           {renderObjectionBubble()}
           <div style={styles.defenceView}>
             <DefenceView anim={phoenixAnim}></DefenceView>
@@ -383,8 +483,10 @@ function App() {
           </div>
           
           <div style={styles.judgeView}>
+            {renderGavel()}
             <JudgeView anim={judgeAnim}></JudgeView>
           </div>
+
         </div>
         <div style={styles.objectionMeter}>
           <ObjectionMeter objectionPoints={objectionPoints} mode={meterMode}></ObjectionMeter>
@@ -407,22 +509,33 @@ function App() {
           >
         </TextBox>
       </div>
+        <div style={{position:"absolute", top: 300, left: 20, zIndex:1000}}>
+          <ReactSlider
+            className="volumeSlider"
+            thumbClassName="volumeSlider-thumb"
+            trackClassName="volumeSlider-track"
+            orientation="vertical"
+            invert
+            onChange={(value,index)=>{setVolume(value/100)}}
+            renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}>
+          </ReactSlider>
+        </div>
+       
       <div style={styles.cardDeck}>
         <div style={styles.timeLeftBar}>
           <TimeLeftBar max={100} current={timeElapsed}/>
         </div>
         <div style={styles.cardRow}>
-          <CardRow cards={cards} setCards={setCards}></CardRow>
+          <CardRow cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText}></CardRow>
         </div>
       </div>
       <div style={{backgroundColor: "red", left: 300,height: 100, width: 100, zIndex:10000, position:"absolute"}} onClick={()=>{setObjectionPoints((objectionPoints)=>(objectionPoints+10));setTimeElapsed((timeElapsed)=>(timeElapsed+1))}}></div>
       <div style={{backgroundColor:"yellow", height: 200, width: 200, zIndex:100, position:"absolute"}} onClick={()=>{getMessagesNormal("phoenix", 1)}}></div>
       <div style={{backgroundColor:"yellow", height: 200, width: 200, zIndex:100, right:1, position:"absolute"}} onClick={()=>{getMessagesNormal("edgeworth", 1)}}></div>
       <div style={{backgroundColor:"green", height: 100, width: 100, zIndex:10000, right:400, position:"absolute"}} onClick={()=>{startObjection()}}></div>
-      <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setPhoenixAnimForce(true);setPhoenixAnim("deskslam")}}></div>
-      <div style={{backgroundColor:"blue", height: 50, width: 50, zIndex:10000, right:450, position:"absolute"}} onClick={()=>{getCourtStartDialogue()}}></div>
+      <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setShowGavel(true)}}></div>
+      <div style={{backgroundColor:"blue", height: 50, width: 50, zIndex:10000, right:450, position:"absolute"}} onClick={()=>{/*getCourtStartDialogue()*/setPromptForm(true)}}></div>
       <div style={{backgroundColor:"orange", height: 100, width: 200, zIndex:1000, right:300, position:"absolute"}} onClick={()=>{runDialogue()}}></div>
-      <div style={{position:"absolute", top: 500, left: 100, zIndex:1000000}}>{renderFetchingMessage()}</div>
     </div>
   );
 }
