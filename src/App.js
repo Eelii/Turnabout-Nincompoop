@@ -2,6 +2,9 @@ import './App.css';
 import React, {useState, useEffect} from "react"
 import useSound from 'use-sound';
 import ReactSlider from 'react-slider';
+import CanvasDraw from "react-canvas-draw";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/styles.css";
 import cornered2 from "./sounds/cornered2.mp3"
 import objectionSoundPhoenix from "./sounds/objection_phoenix.mp3"
 import DefenceView from './DefenceView';
@@ -21,6 +24,7 @@ import gavel from "./anims/gavel.gif"
 import gavelSound from "./sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
 import deskslamSound from "./sounds/sfx-deskslam.wav"
+import { defineHidden } from '@react-spring/shared';
 
 
 function App() {
@@ -53,6 +57,9 @@ function App() {
   const [fetchingMessage, setFetchingMessage] = useState(false)
   const [showGavel, setShowGavel] = useState(false)
   const [cardDroppedText, setCardDroppedText] = useState("")
+  
+  const [courtStarted, setCourtstarted] = useState(false)
+  const [showLeaderboardForm, setShowLeaderBoardForm] = useState(true)
 
   const [test, setTest] = useState([])
 
@@ -211,6 +218,22 @@ function App() {
       position: "absolute",
       top: -20,
       width: "100%"
+    },
+    courtNotStarted:{
+      height: "100%",
+      width: "100%",
+      backgroundColor: "white",
+      position: "absolute",
+      zIndex: 10000,
+    },
+    leaderBoardFormBackground:{
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      zIndex: 10000,
+      opacity: 0.9,
+      backgroundColor: "red",
+      justifyContent: "center"
     }
   }
 
@@ -297,7 +320,9 @@ function App() {
   },[])
 
   useEffect(()=>{
-    getMessagesNormal("phoenix", 1, prompt=cardDroppedText)
+    if(cardDroppedText != ""){
+      getMessagesNormal("phoenix", 1, prompt=cardDroppedText)
+    }
   },[cardDroppedText])
 
   async function getMessagesNormal (character, numOfMessages, prompt=undefined) {
@@ -463,9 +488,79 @@ function App() {
       return false
     }
   }
+
+  const renderCourtNotStarted = () => {
+    if(courtStarted === false){
+      return(
+        <div>
+          <div style={styles.courtNotStarted}>
+            <div style={{position: "absolute", top:"50%", left:"40%"}}>
+              <AwesomeButton 
+                size="large"
+                type="primary"
+                onPress={()=>{
+                    setCourtstarted(true)
+                    getCourtStartDialogue()                    
+                    setTimeout(()=>{setShowGavel(true)},1000)  
+                  }
+                }
+              >Button</AwesomeButton>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  const renderLeaderboardForm = () => {
+    if (showLeaderboardForm === true){
+      return(
+        <div>
+          <div style={styles.leaderBoardFormBackground}></div>
+          <div className="leaderboardForm">
+            
+            <div className="leaderboardFormTextDiv">
+              <div className="leaderboardFormHeading"><p style={{fontSize:10}}>HELDÖLKF</p></div>
+              <div style={{width:"78%", display:"flex", justifyContent:"center", fontSize:6, position:"absolute", top:"15%", left:"10%"}}><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p></div>
+              <CanvasDraw
+                style={{height:"100%", width:"100%", zIndex:1000}}
+                hideInterface={false}
+                lazyRadius={0}
+                brushRadius={1}
+                hideGrid={true}
+              />
+
+            </div>
+
+            <div className="userSignDiv">
+              <div className="printNameDiv">
+                <p className="printNameText">Print Name</p>
+                <input className="printNameInput" maxLength={15} type="text"></input>
+              </div>
+              <div className="signatureDiv">
+                <div className="signatureArea">
+                  <CanvasDraw 
+                    style={{height:"100%", width:"100%"}}
+                    hideInterface={false}
+                    lazyRadius={0}
+                    brushRadius={1}
+                    hideGrid={true}
+                  />
+                </div>
+                <div className="signatureLine"></div>
+                <p className="signatureText">Signature</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
  
   return (
     <div className="App">
+       {renderCourtNotStarted()}
+       {renderLeaderboardForm()}
       <div className="mainView" style={styles.mainView}>
         <div style={styles.phoenixScore}><p>{phoenixScore}</p></div>
         <div style={styles.edgeworthScore}><p>{edgeworthScore}</p></div>

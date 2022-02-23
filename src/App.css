@@ -158,7 +158,106 @@ to {left:5px;}
   background: linear-gradient(90deg, limegreen, rgb(42, 185, 42));
 
 }
+
 .volumeSlider-track{
   height: 100px;
 }
+
+.leaderboardForm{
+  position: absolute;
+  height: 80vh;
+  width: 56.6vh;
+  background-color: white;
+  z-index: 100000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.leaderboardFormHeading{
+  display:flex;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  top: 5%;
+}
+
+.leaderboardFormTextDiv{
+  height: 80%;
+  width: 100%;
+  border-style: solid;
+  border-color: green;
+  position: absolute;
+}
+.userSignDiv{
+  border-style: solid;
+  border-color: black;
+  height: 20%;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}
+.printNameDiv{
+  position: absolute; 
+  height:30; 
+  border-style: solid;
+  border-color: gray;
+  width: 50%;
+  height: 100%;
+}
+
+.printNameInput{
+  position: absolute; 
+  height:30; 
+  left:10%;
+  top: 17%;
+  width: 68%;
+  border-top-style:hidden;
+  border-left-style:hidden;
+  border-right-style:hidden;
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 25px
+}
+
+.printNameInput:focus{
+  outline:none
+}
+
+.printNameText{
+  position: absolute;
+  left: 23%;
+  top: 50%
+}
+
+.signatureDiv{
+  position: absolute; 
+  height: 100%;
+  width:50%;
+  right: 0px;
+  border-style: solid;
+  border-color: green;
+}
+
+.signatureText{
+  position: absolute;
+  right: 30%;
+  top: 51%;
+}
+.signatureLine{
+  position: absolute;
+  width:68%;
+  right:14%;
+  top: 57%;
+  height: 1.5px;
+  color: cyan;
+  background-color: gainsboro;
+}
+
+.signatureArea{
+  height: 57%;
+  width: 100%;
+  border-style: solid;
+  border-color: yellow;
+}
+
 
