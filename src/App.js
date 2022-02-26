@@ -28,7 +28,7 @@ import { defineHidden } from '@react-spring/shared';
 
 
 function App() {
-  const URL = "http://88.115.45.196:5000"
+  const URL = "http://192.168.43.17:5000"
   const TESTRESPONSE = {sentence:"start", character:"phoenix", emoji_1:{emoji:"haha"}, emoji_2:{emoji:"hihi"}, emoji_3:{emoji:"hehe"}}
   const [phoenixAnim, setPhoenixAnim] = useState("normal")
   const [phoenixAnimForce, setPhoenixAnimForce] = useState(false)
@@ -58,8 +58,11 @@ function App() {
   const [showGavel, setShowGavel] = useState(false)
   const [cardDroppedText, setCardDroppedText] = useState("")
   
-  const [courtStarted, setCourtstarted] = useState(false)
+  const [courtStarted, setCourtstarted] = useState(true)
   const [showLeaderboardForm, setShowLeaderBoardForm] = useState(true)
+  const [printNameInput, setPrintNameInput] = useState("")
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [leaderboardScores, setLeaderboardScores] = useState([])
 
   const [test, setTest] = useState([])
 
@@ -234,6 +237,15 @@ function App() {
       opacity: 0.9,
       backgroundColor: "red",
       justifyContent: "center"
+    },
+    leaderBoardBackground:{
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      zIndex: 10000,
+      opacity: 0.9,
+      backgroundColor: "yellow",
+      justifyContent: "center"
     }
   }
 
@@ -279,6 +291,24 @@ function App() {
     }
   }
 
+  async function fetchIPdata(){
+    let response = await fetch(`${URL}/getipdetails`)
+    if(response.ok == true){
+      return response.json()
+    }
+  }
+
+  async function fetchLeaderboardScores(){
+    let response = await fetch(`${URL}/scores`)
+    return response.json()
+  }
+
+  async function postScore(scoreData){
+    console.log(`Post score: ${scoreData.score}`)
+    const response = await fetch(`${URL}/scores?put=true&score=${scoreData.score}&name=${scoreData.name}`)
+    return response.json()
+  }
+
   const handleKeyPress = event => {
     const pressedKey = event.key
     console.log("PRESS")
@@ -302,7 +332,7 @@ function App() {
       setJudgeAnim("warning")
       setTimeout(()=>{playGavelSound()},200)
       setTimeout(()=>{setShowGavel(false)}, 1800)
-      setTimeout(()=>{setJudgeAnim("normal");judgeAnimForce(false)},2000)
+      setTimeout(()=>{setJudgeAnim("normal");setJudgeAnimForce(false)},2000)
     }
   },[showGavel])
 
@@ -312,10 +342,13 @@ function App() {
     setCurrentMessageType({"for_judge":currentMessageTmp.for_judge, "is_thought":currentMessageTmp.is_thought})
   },[currentMessageIndex])
 
+
+  // ----- Initial useEffect -----
   useEffect(()=>{
     window.addEventListener("keydown", handleKeyPress)
-    console.log("ADsf")
     addNewCardsToDeck(5)
+    console.log("FETCH")
+    //getIPdata()
     return()=>{console.log("clean up!")}
   },[])
 
@@ -324,6 +357,11 @@ function App() {
       getMessagesNormal("phoenix", 1, prompt=cardDroppedText)
     }
   },[cardDroppedText])
+
+  useEffect(()=>{
+    console.log("Leaderboard scores:")
+    console.log(leaderboardScores)
+  },[leaderboardScores])
 
   async function getMessagesNormal (character, numOfMessages, prompt=undefined) {
     setFetchingMessage(true)
@@ -355,6 +393,21 @@ function App() {
     setFetchingMessage(false)
   }
 
+  async function getLeaderboardScores(){
+    let scoreDocs = await fetchLeaderboardScores()
+    for(let i = 0; i < scoreDocs.length; i++){
+      setLeaderboardScores((leaderboardScores)=>(
+        [...leaderboardScores, 
+        { "id":scoreDocs[i]._id,
+          "score":scoreDocs[i].score,
+          "name":scoreDocs[i].name,
+          "country":scoreDocs[i].country,
+          //"datetime":scoreDocs[i].datetime
+        }
+        ]))
+    }
+  }
+
   async function getCourtStartDialogue(){
     const judgeResponse = await fetchInSession("judge")
     setMessages((messages)=>([...messages, judgeResponse]))
@@ -362,14 +415,6 @@ function App() {
     setMessages((messages)=>([...messages, edgeworthResponse]))
     const phoenixResponse = await fetchInSession("phoenix")
     setMessages((messages)=>([...messages, phoenixResponse]))
-    
-    //console.log(tmpSentence)
-    /*
-    setTest((test)=>([...test, test.length])))
-    .then(fetchInSession("edgeworth"))
-    .then(setTest((test)=>([...test, test.length])))
-    .then(fetchInSession("phoenix"))
-    .then(setTest((test)=>([...test, test.length])))*/
   }
 
 
@@ -381,15 +426,7 @@ function App() {
       getMessagesNormal(messages[currentMessageIndex].character, 1)
     }
     else if (currentMessageType["for_judge"] == true){
-      if (randomNum < 40){
-        getMessagesNormal("judge", 1)
-      }
-      else if (randomNum < 80){
-        getMessagesNormal("judge", 2)        
-      }
-      else{
-        getMessagesNormal("judge", 3)
-      }
+      getMessagesNormal("judge", 1)
     }
     else if (messages[currentMessageIndex].character === "phoenix"){
       getMessagesNormal("edgeworth", 1)
@@ -504,9 +541,48 @@ function App() {
                     setTimeout(()=>{setShowGavel(true)},1000)  
                   }
                 }
-              >Button</AwesomeButton>
+                >Button
+              </AwesomeButton>
             </div>
           </div>
+        </div>
+      )
+    }
+  }
+
+  // TODO
+  async function getIPdata(){
+    const IPdata = await fetchIPdata()
+    console.log(IPdata)
+  }
+  
+  async function submitLeaderboardForm(){
+
+    setShowLeaderBoardForm(false)
+    const scorePosted = await postScore({"name":printNameInput, "score":phoenixScore})
+    if(scorePosted.status = "ok"){
+      getLeaderboardScores()
+      setShowLeaderboard(true)
+    }
+  }
+
+  const renderLeaderboard = () => {
+    if (showLeaderboard === true){
+      return(
+        <div>
+          <div style={styles.leaderBoardBackground}></div>
+            <div className="leaderboardDiv">
+              <div className="leaderboardList">
+                <tr><th className="leaderboardTableHeading">Name</th><th className="leaderboardTableHeading">Score</th><th className="leaderboardTableHeading">Country</th></tr>
+                {leaderboardScores.map((score) =>
+                  <tr key={score.id} className="leaderboardTableRow">
+                    <td>{score.name}</td>
+                    <td>{score.score}</td>
+                    <td>{score.country}</td>
+                  </tr>
+                )}
+              </div>
+            </div>
         </div>
       )
     }
@@ -518,24 +594,24 @@ function App() {
         <div>
           <div style={styles.leaderBoardFormBackground}></div>
           <div className="leaderboardForm">
-            
             <div className="leaderboardFormTextDiv">
               <div className="leaderboardFormHeading"><p style={{fontSize:10}}>HELDÖLKF</p></div>
               <div style={{width:"78%", display:"flex", justifyContent:"center", fontSize:6, position:"absolute", top:"15%", left:"10%"}}><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p></div>
               <CanvasDraw
                 style={{height:"100%", width:"100%", zIndex:1000}}
-                hideInterface={false}
+                hideInterface={true}
                 lazyRadius={0}
                 brushRadius={1}
                 hideGrid={true}
               />
-
             </div>
 
             <div className="userSignDiv">
               <div className="printNameDiv">
                 <p className="printNameText">Print Name</p>
-                <input className="printNameInput" maxLength={15} type="text"></input>
+                <input className="printNameInput" maxLength={15} type="text" onChange={(e)=>{
+                  console.log(`NAME INPUT: ${printNameInput}`)
+                  setPrintNameInput(e.target.value)}}></input>
               </div>
               <div className="signatureDiv">
                 <div className="signatureArea">
@@ -552,6 +628,17 @@ function App() {
               </div>
             </div>
           </div>
+          <div style={{zIndex: 10000, position:"absolute", top: "40%", left: "70%"}}>
+            <AwesomeButton 
+              size="large"
+              type="primary"
+              onPress={()=>{
+                  submitLeaderboardForm()
+                }
+              }
+            >Button
+            </AwesomeButton>
+          </div>
         </div>
       )
     }
@@ -561,6 +648,7 @@ function App() {
     <div className="App">
        {renderCourtNotStarted()}
        {renderLeaderboardForm()}
+       {renderLeaderboard()}
       <div className="mainView" style={styles.mainView}>
         <div style={styles.phoenixScore}><p>{phoenixScore}</p></div>
         <div style={styles.edgeworthScore}><p>{edgeworthScore}</p></div>

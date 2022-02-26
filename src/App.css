@@ -259,5 +259,31 @@ to {left:5px;}
   border-style: solid;
   border-color: yellow;
 }
+.leaderboardDiv{
+  position: absolute;
+  z-index: 100000;
+  height: 100%;
+  width: 50%;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.leaderboardList{
+  background-color: cyan;
+  text-align: center;
+  position: relative;
+  left: 10%;
+}
+.leaderboardTableHeading{
+  position: relative;
+  margin-right: 200px;
+  color: saddlebrown
+}
+.leaderboardTableRow{
+  background-color: bisque;
+  border-style: solid;
+  border-color: red
+}
 
 
