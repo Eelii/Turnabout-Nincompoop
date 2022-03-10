@@ -40,7 +40,7 @@ function ObjectionMeter ({objectionPoints, mode}){
                     }}
                 />
                 <div style={{width:130, left:-15, top:-20, height: 50, position:"relative", borderRadius:10, backgroundImage:`url(${marble})`, textAlign:"center"}}>
-                <p class={meterFull?"gradientText":"objectionMeterTextNormal"}>OBJECTION!</p>
+                <p className={meterFull?"gradientText":"objectionMeterTextNormal"}>OBJECTION!</p>
                 </div>
             </div>
         </diV>

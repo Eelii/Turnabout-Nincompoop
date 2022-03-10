@@ -51,7 +51,7 @@ const postItColors = {
   4:"#fff740" // dark yellow
 }
 
-const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDroppedText}) =>{
+const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard}) =>{
     //const randomColorNum = Math.floor(Math.random() * 5)
     //const randomMarginNum = Math.floor(Math.random() * 40) + 5;
     //const randomRotateNum = Math.floor(Math.random() * (5+5) - 5)
@@ -70,10 +70,11 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
       onDragEnd: (state) => {
           //console.log(`X: ${state.xy[0]} Y: ${state.xy[1]}`)
           //console.log(state)
-          if(state.xy[1] < 310){
+          if(state.xy[1] < 310 && acceptingCard === true){
             // TODO: +text
             //setCardStyle({...cardStyle, visibility:"hidden"})
             setCardDroppedText(text)
+            setAcceptingCard(false)
             setTimeout(()=>{setCards(cards.filter((item) => (item.text != text)))}, 1000)
 
           }
@@ -93,17 +94,17 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
 }
 
 
-const getCard = (card, cards, setCards, setCardDroppedText) => {
-  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText}></Card>)
+const getCard = (card, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard) => {
+  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText} acceptingCard={acceptingCard} setAcceptingCard={setAcceptingCard}></Card>)
 }
 
-function CardRow({cards, setCards, setCardDroppedText}){
+function CardRow({cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard}){
 
   
     return(
       <div>
         <div style={{display:"flex", flexDirection:"row", }}>
-            {cards.map(card =>(getCard(card, cards, setCards, setCardDroppedText)))}
+            {cards.map(card =>(getCard(card, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard)))}
         </div>
       </div>
     )

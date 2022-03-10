@@ -81,9 +81,11 @@ function TextBox({
         setPhoenixAnimForce, 
         edgeworthAnimForce, 
         objectionModeOn, 
-        fetchingMessage
+        fetchingMessage,
+        timeElapsed,
+        setTimeElapsed
     }){
-
+    const MAXTIME = 300
     const [messageReady, setMessageReady] = useState(false)
     const nextMessageIndex = () =>{
         setCurrentMessageIndex((index)=>(index+1))
@@ -91,7 +93,6 @@ function TextBox({
     const currentMessage = messages[currentMessageIndex]
     if (currentMessage.character == "phoenix"){
         if (!phoenixAnimForce){
-            console.log(`CURRENT ANIM: TOP: ${phoenixAnim}`)
             setPhoenixAnim(emojisToPhoenixAnimation(currentMessage.emoji_1.emoji, messageReady, objectionModeOn, phoenixAnim))
         } 
     }
@@ -107,6 +108,9 @@ function TextBox({
             return( <div style={styles.nextMsgBtn} 
                         onClick={()=>{
                             nextMessageIndex()
+                            if (timeElapsed < MAXTIME){
+                                setTimeElapsed((timeElapsed)=>(timeElapsed+3))
+                            }
                             setMessageReady(false)
                             if(phoenixAnimForce == true){
                                 setPhoenixAnimForce(false)

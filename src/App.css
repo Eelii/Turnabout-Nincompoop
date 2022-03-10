@@ -265,25 +265,289 @@ to {left:5px;}
   height: 100%;
   width: 50%;
   background-color: white;
+  border: solid 1px black;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 .leaderboardList{
   background-color: cyan;
+  width: 80%;
   text-align: center;
   position: relative;
   left: 10%;
 }
 .leaderboardTableHeading{
   position: relative;
-  margin-right: 200px;
-  color: saddlebrown
+  margin-right: 2000px;
+  color: yellow
 }
-.leaderboardTableRow{
+.leaderboardTableRow1{
   background-color: bisque;
   border-style: solid;
   border-color: red
 }
+.leaderboardTableRow2{
+  background-color: white;
+  border-style: solid;
+  border-color: red
+}
+.cardDiscardAreaActive{
+  border-style: solid;
+  border-color: green;
+  width: 30%;
+  height: 100px;
+  z-index: 100;
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.leaderBoardBackground{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 10000;
+  opacity: 0.9;
+  background-color: yellow;
+  justify-content: center;
+}
+.leaderboardFormBackground{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 10000;
+  opacity: 0.9;
+  background-color: red;
+  justify-content: center
+}
+.courtNotStartedBackground{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 10001;
+}
+.timeLeftBarDiv{
+  position: absolute;
+  top: -20;
+  width: 100%;
+}
+.promptForm{
+  position: absolute;
+  left: 30%;
+  top: 20%;
+  width: 40%;
+  height: 40%;
+  z-index: 99999;
+  background-color: white;
+  border-style: solid;
+  border-color: saddlebrown;
+  border-radius: 3;
+  animation: objectionFormFadeIn;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+  justify-content: center;
+}
+.promptFormButton{
+  width: 28%;
+  height: 100%;
+  background-color:red;
+  float: right;
+}
+.objectionBubble{
+  position: absolute;
+  top: 20%;
+  left: 36%;
+}
+.objectionFormButton{
+  width: 28%;
+  height: 100%;
+  background-color: red;
+  float: right;
+}
+.objectionForm{
+  position: absolute;
+  left: 30%;
+  top: 20%;
+  width: 40%;
+  height: 40%;
+  z-index:99999;
+  background-color: white;
+  border-style: solid;
+  border-color: saddlebrown;
+  border-radius: 3;
+  animation: objectionFormFadeIn;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+  justify-content: center
+}
+.blackoutOn{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 2;
+  animation: blackout;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+}
 
+
+
+/*        DOORS       */ 
+
+
+
+.doorsDivVisible{
+  position: absolute;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+}
+.doorsDivHidden{
+  position: absolute;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10000;
+}
+.staticDoorRight{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  box-shadow :inset 10px 0px 0px #8d6d21;
+  left: 50%;
+  position: relative;
+  float: left;
+  background-color: #CC9C2F;
+}
+.staticDoorLeft{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  box-shadow :inset -10px 0px 0px #8d6d21;
+  border: solid, black, 30px;
+  background-color: #CC9C2F;
+  position: relative;
+  float: right;
+  right: 50%;
+}
+.closingDoorRight{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  box-shadow :inset 10px 0px 0px #8d6d21;
+  left: 100%;
+  position: relative;
+  float: left;
+  background-color: #CC9C2F;
+  animation-name: closingRight;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+}
+.closingDoorLeft{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  box-shadow :inset -10px 0px 0px #8d6d21;
+  border: solid, black, 30px;
+  background-color: #CC9C2F;
+  position: relative;
+  float: right;
+  right: 100%;
+  animation-name: closingLeft;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+}
+.openingDoorRight{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset 10px 0px 0px 0px #8d6d21;
+  box-shadow :inset 10px 0px 0px #8d6d21;
+  left: 50%;
+  position: relative;
+  float: left;
+  background-color: #CC9C2F;
+  animation-name: openingRight;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+}
+.openingDoorLeft{
+  height: 100%;
+  width: 50%;
+  -webkit-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  -moz-box-shadow:inset -10px 0px 0px 0px #8d6d21;
+  box-shadow :inset -10px 0px 0px #8d6d21;
+  border: solid, black, 30px;
+  background-color: #CC9C2F;
+  position: relative;
+  float: right;
+  right: 50%;
+  animation-name: openingLeft;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+}
+.doorRectangle1Outer{
+  width: 40%;
+  height: 40%;
+  border-style: outset;
+  border-width: 5px;
+  border-color: #9D7936;
+  box-shadow: 3px 5px 3px 3px #9D7936;
+  position: absolute;
+  border-radius: 2px;
+  top: 10%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -10%)
+}
+.doorRectangleInner{
+  width: 80%;
+  height: 80%;
+  border-style: inset;
+  border-width: 5px;
+  border-color: #9D7936;
+  box-shadow: inset 3px 3px 5px #9D7936;
+  position: absolute;
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+.doorRectangle2Outer{
+  width: 40%;
+  height: 40%;
+  border-style: outset;
+  border-width: 5px;
+  border-color: #9D7936;
+  border-radius: 2px;
+  box-shadow: 3px 5px 3px 3px #9D7936;
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -90%)
+}
+@keyframes closingLeft{
+  from {right:100%;}
+  to {right:50%}
+}
+@keyframes closingRight{
+  from {left: 100%;}
+  to {left: 50%;}
+}
+@keyframes openingLeft{
+  from {right:50%;}
+  to {right:100%}
+}
+@keyframes openingRight{
+  from {left:50%;}
+  to {left:100%}
+}
 

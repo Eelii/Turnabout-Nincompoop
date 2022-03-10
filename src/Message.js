@@ -14,8 +14,6 @@ const Message = ({
         })),
         [message]
     );
-    console.log("MESSAGE")
-    console.log(objectionModeOn)
     if(objectionModeOn == true){
         trail = 25
     }
