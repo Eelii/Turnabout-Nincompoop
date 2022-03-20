@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import useSound from 'use-sound';
 import ReactSlider from 'react-slider';
 import CanvasDraw from "react-canvas-draw";
@@ -27,11 +27,13 @@ import deskslamSound from "./sounds/sfx-deskslam.wav"
 import { defineHidden } from '@react-spring/shared';
 
 import LeaderboardForm from './LeaderboardForm';
+import { useWheel } from '@use-gesture/react';
 
 
 function App() {
   const URL = "http://192.168.1.7:5000"
   const TESTRESPONSE = {sentence:"start", character:"phoenix", emoji_1:{emoji:"😊"}, emoji_2:{emoji:"😊"}, emoji_3:{emoji:"😊"}, for_judge: false, is_question: false, is_thought: false, shouting: false}
+  const signaturesRef = useRef([])
   const [phoenixAnim, setPhoenixAnim] = useState("normal")
   const [phoenixAnimForce, setPhoenixAnimForce] = useState(false)
   const [edgeworthAnim, setEdgeworthAnim] = useState("normal")
@@ -62,16 +64,16 @@ function App() {
   const [promptFormText, setPromptFormText] = useState("")
   const [objectionBubbleVisible, setObjectionBubbleVisible] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const TIMEINTERVAL = 50
-  const MAXTIME = 300
+  const TIMEINTERVAL = 10
+  const MAXTIME = 100//2000
   const [fetchingMessage, setFetchingMessage] = useState(false)
   const [showGavel, setShowGavel] = useState(false)
-  const [cardDroppedText, setCardDroppedText] = useState("")
+  const [cardDroppedText, setCardDroppedText] = useState({text:"", objectionCard: false})
   
-  const [courtStarted, setCourtstarted] = useState(false)
-
-  const [showLeaderboardForm, setShowLeaderBoardForm] = useState(false)
+  const [courtStarted, setCourtstarted] = useState(true)
+  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(true)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+
   const [printNameInput, setPrintNameInput] = useState("")
 
   const [leaderboardScores, setLeaderboardScores] = useState([])
@@ -84,62 +86,7 @@ function App() {
   const [playDeskslamSound, {stopDeskslamSound}] = useSound(deskslamSound, {volume:volume})
   const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
 
-  function getNewCard(text){
-    const randomColorNum = Math.floor(Math.random() * 5)
-    const randomMarginNum = Math.floor(Math.random() * 40) + 5;
-    const randomRotateNum = Math.floor(Math.random() * (5+5) - 5);
-    return {text:text, colorNum:randomColorNum, marginNum:randomMarginNum, rotateNum:randomRotateNum}
-  }
-
-  async function addNewCardsToDeck(cardsAmount){
-    for(let i=0; i<cardsAmount; i++){
-      const response = await fetchCardPrompt()
-      const newCard = getNewCard(response.sentence)
-      setCards((cards)=>([...cards, newCard]))
-    }
-  } 
-
   const styles ={
-    mainView:{
-      borderStyle:"solid",
-      borderColor:"red",
-      position:"absolute",
-      zIndex: 1000,
-      height: "70%",
-      width: "80%",
-      left: "9%",
-      minWidth: 900
-    },
-    courtView:{
-      borderStyle:"solid",
-      borderColor:"black",
-      position:"relative",
-      zIndex: 1000,
-      height: "70%",
-      width: "80%",
-      left: "10%"
-    },
-    objectionMeter:{
-      position: "absolute",
-      borderStyle:"solid",
-      left: 1,
-      bottom: 40
-    },
-    prosecutionView:{
-      position: "absolute",
-      right: 256,
-      top: 133,
-      zIndex: 1
-    },
-    defenceView:{
-      position: "absolute",
-      top: 133,
-    },
-    judgeView:{
-      position:"absolute",
-      left:"36%",
-      zIndex: 1
-    },
     cardDeck:{
       position:"absolute",
       borderStyle: "solid",
@@ -149,28 +96,44 @@ function App() {
       left: 10,
       right: 10,
       backgroundImage:`url(${table})`
-    },
-    cardRow:{
-      position: "absolute", 
-      bottom:1, 
-      left: "18%", 
-      zIndex:5
-    },
-    phoenixScore:{
-      color: "blue",
-      position: "absolute",
-      top: 0,
-      left: 30,
-      fontSize: 30
-    },
-    edgeworthScore:{
-      color: "maroon",
-      position: "absolute",
-      top: 0,
-      right: 50,
-      fontSize: 30
     }
   }
+
+  function getNewCard(text, objectionResponse=false){
+    if(objectionResponse==false){
+      const randomColorNum = Math.floor(Math.random() * 5)
+      const randomMarginNum = Math.floor(Math.random() * 40) + 5;
+      const randomRotateNum = Math.floor(Math.random() * (5+5) - 5);
+      return {text:text, colorNum:randomColorNum, marginNum:randomMarginNum, rotateNum:randomRotateNum}
+    } else{
+      const randomColorNum = Math.floor(Math.random() * 5)
+      const randomMarginNum = Math.floor(Math.random() * 40) + 5;
+      const randomRotateNum = Math.floor(Math.random() * (5+5) - 5);
+      const textCut = text.split(" ", 5).join(" ")
+      return {text:textCut, colorNum:randomColorNum, marginNum:randomMarginNum, rotateNum:randomRotateNum, response:objectionResponse}
+    }
+  }
+
+  async function addNormalCardsToDeck(cardsAmount){
+    for(let i=0; i<cardsAmount; i++){
+      const response = await fetchCardPrompt()
+      const newCard = getNewCard(response.sentence)
+      newCard.type = "normal"
+      setCards((cards)=>([...cards, newCard]))
+    }
+  } 
+
+  async function addObjectionCardsToDeck(cardsAmount){
+    for(let i=0; i<cardsAmount; i++){
+      const response = await fetchObjectionCard()
+      const newCard = getNewCard(response.sentence, response)
+      newCard.type = "objection"
+      setCards((cards)=>([...cards, newCard]))
+    }
+  } 
+
+  //------------------------------ FETCH FUNCTIONS ---------------------------------------
+
 
   async function fetchSentenceSpeaking(character, objectionModeOn=false, prompt=false){
     let response
@@ -207,7 +170,16 @@ function App() {
   }
 
   async function fetchCardPrompt(){
-    let response = await fetch(`${URL}/getcardprompt`)
+    let response = await fetch(`${URL}/getcardprompt`, {headers:{"Access-Control-Allow-Origin":"*"}})
+    console.log("FETCH CARD:")
+    console.log(response)
+    if(response.ok == true){
+      return response.json()
+    }
+  }
+
+  async function fetchObjectionCard(){
+    let response = await fetch(`${URL}/getresponse/objection?character=phoenix`)
     if(response.ok == true){
       return response.json()
     }
@@ -220,6 +192,8 @@ function App() {
     }
   }
 
+  //---------------------------------------------------------------
+
   const handleKeyPress = event => {
     const pressedKey = event.key
     //console.log("PRESS")
@@ -230,11 +204,14 @@ function App() {
     }
   };
 
+  //--------------------- UseEffects -------------------------------
+
   useEffect(()=>{
-    if(currentMessageIndex > 2){
-      handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
-    }
-  },[currentMessageIndex])
+    //window.addEventListener("keydown", handleKeyPress)
+    //addNewCardsToDeck(5)
+    //getIPdata()
+    return()=>{console.log("clean up!")}
+  },[])
 
   useEffect(()=>{
     if(showGavel === true){
@@ -247,85 +224,161 @@ function App() {
   },[showGavel])
 
   useEffect(()=>{
-    if(cards.length < 5){
-      setTimeout(()=>{addNewCardsToDeck(1)},2000)
+    if(cards.length < 5 && !objectionModeOn){
+      addNormalCardsToDeck(1)
+    }
+    else if(cards.length < 5 && objectionModeOn){
+      addObjectionCardsToDeck(1)
     }
   },[cards])
 
   useEffect(()=>{
-    console.log("SHOW LEADERBOARD")
-    console.log(showLeaderboard)
-  },[showLeaderboard])
+    console.log("SIGNATURE REFS:")
+    console.log(signaturesRef.current)
+    
+    if(leaderboardScores.length > 0){
+      leaderboardScores.map((scoreData, index)=>{
+        console.log(scoreData.signature)
+        signaturesRef.current[index].loadSaveData(JSON.stringify(scoreData.signature))
+      })
+    }
+  },signaturesRef)
+
+  useEffect(()=>{
+    if(leaderboardScores.length > 0){
+      leaderboardScores.map((scoreData, index)=>{
+        console.log("SCOREDATA")
+        console.log(scoreData)
+        console.log("SIGNATURE")
+        console.log(scoreData.signature)
+        signaturesRef.current[index].loadSaveData(scoreData.signature)
+      })
+    }
+  },[leaderboardScores])
 
   useEffect(()=>{
     // In case a verdict is interrupted with an objection.
     console.log(`OBJECTION MODE ON: ${objectionModeOn}`)
-    if(messages[currentMessageIndex].type == "verdict"){
+    // Remove?
+    /*if(messages[currentMessageIndex].type == "verdict"){
       if(messages[currentMessageIndex+1]?.type == "adjourned"){
         setMessages(messages.filter((message)=>(message.type != "adjourned")))
       }
+    }*/
+    if(messages[currentMessageIndex+1] != undefined){
+      setMessages((messages)=>messages.slice(0,currentMessageIndex+1))
     }
     if(objectionModeOn === false && timeElapsed >= MAXTIME){
       console.log("OBJECTION MODE == FALSE && TIME ELAPSED > MAX")
       setTimeout(()=>{setShowGavel(true)}, 3000)
-      closingDialogue()
     }
   },[objectionModeOn])
 
+  useEffect(()=>{
+    if(objectionPoints < 1){
+      setObjectionModeOn(false)
+    }
+  },[objectionPoints])
 
   useEffect(()=>{
+
+    if(currentMessageIndex > 2){
+      handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
+    }
+
     const currentMessageTmp = messages[currentMessageIndex]
 
-    if(currentMessageIndex === messages.length-1 && currentMessageTmp.character == "edgeworth" && timeElapsed < MAXTIME){
-      setAcceptingCard(true)
+    if(currentMessageTmp.type == "adjourned" && messageReady === true){
+      setTimeout(()=>{
+        setShowGavel(true)
+        setTimeout(() => {
+          moveDoors({direction:"close"})
+          setTimeout(()=>{
+            setLeaderboardFormVisible(true)
+          }, 5000)
+        }, 3000);
+      },2000)
+    }
+
+    if(objectionModeOn && currentMessageIndex === messages.length-2){
+      setMessages(messages.filter((message)=>(message.type != "adjourned" && message.type != "verdict")))
+    }
+
+    if(currentMessageIndex === messages.length-1){
+      if(timeElapsed < MAXTIME){
+        if(currentMessageTmp.character == "edgeworth" || currentMessageTmp.character == "judge"){
+          setAcceptingCard(true)
+        } else{
+          setAcceptingCard(false)
+        }
+      }
+      else{
+        if(!objectionModeOn){
+          setAcceptingCard(false)
+        } else{
+          if(currentMessageTmp.character == "edgeworth" || currentMessageTmp.character == "judge"){
+            setAcceptingCard(true)
+          } else{
+            setAcceptingCard(false)
+          }
+        }
+        
+      }
     } 
-    // Overtime 
-    else if (objectionModeOn && currentMessageTmp.character == "edgeworth" && timeElapsed >= MAXTIME){
-      setMessages(messages.filter((message)=>(message.type != "adjourned")))
-      setAcceptingCard(true)
-    } else{
+    if(currentMessageIndex != messages.length-1){
       setAcceptingCard(false)
     }
+      
     if(messages.length > 1){
       runDialogue()
     }
     setCurrentMessageType({"for_judge":currentMessageTmp.for_judge, "is_thought":currentMessageTmp.is_thought})
   },[currentMessageIndex])
 
-
-  // ----- Initial useEffect -----
   useEffect(()=>{
-    //window.addEventListener("keydown", handleKeyPress)
-    //addNewCardsToDeck(5)
-    //getIPdata()
-    return()=>{console.log("clean up!")}
-  },[])
-
-  useEffect(()=>{
-    if(cardDroppedText != ""){
-      getMessagesNormal("phoenix", 1, prompt=cardDroppedText)
+    if(cardDroppedText.text != "" && cardDroppedText.objectionCard == false){
+      getMessagesNormal("phoenix", 1, prompt=cardDroppedText.text)
+    } 
+    else if(cardDroppedText.text != "" && cardDroppedText.objectionCard != false){
+      setMessages((messages)=>([...messages, cardDroppedText.objectionCard]))
     }
   },[cardDroppedText])
 
   useEffect(()=>{
-    console.log("Leaderboard scores:")
-    console.log(leaderboardScores)
-  },[leaderboardScores])
+    const nextMessageIndex = currentMessageIndex+1
+    const nextMessage = messages[nextMessageIndex]
+    const currentMessage = messages[currentMessageIndex]
+    console.log("messages")
+    console.log(messages)
+    console.log("currentMessage:")
+    console.log(currentMessage)
+    console.log("nextMessage:")
+    console.log(nextMessage)
+    
+  },[messages])
 
-  async function getMessagesNormal (character, numOfMessages, prompt=undefined) {
-    setFetchingMessage(true)
-    if (prompt == undefined){
-      for(let i = 0; i < numOfMessages; i++){
-        let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
-        setMessages((messages)=>([...messages, tmpMsg]))
-      }
+
+  // ----------------------------------
+
+  async function getMessagesNormal (character, numOfMessages, prompt=undefined, objectionResponse=false) {
+
+    if(objectionResponse!=false){
+      setMessages((messages)=>([...messages, objectionResponse]))
     } else{
-      for(let i = 0; i < numOfMessages; i++){
-        let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn, prompt=prompt)
-        setMessages((messages)=>([...messages, tmpMsg]))
+      setFetchingMessage(true)
+      if (prompt == undefined){
+        for(let i = 0; i < numOfMessages; i++){
+          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
+          setMessages((messages)=>([...messages, tmpMsg]))
+        }
+      } else{
+        for(let i = 0; i < numOfMessages; i++){
+          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn, prompt=prompt)
+          setMessages((messages)=>([...messages, tmpMsg]))
+        }
       }
+      setFetchingMessage(false)
     }
-    setFetchingMessage(false)
   }
 
   async function getVerdict(){
@@ -365,8 +418,8 @@ function App() {
   async function runDialogue(){
     const currentMessageTmp = messages[currentMessageIndex]
     console.log(`MESSAGE TYPE ${messages[currentMessageIndex].type}`)
-    if (timeElapsed < MAXTIME){
-      setTimeElapsed((timeElapsed)=>(timeElapsed+TIMEINTERVAL))
+    if (timeElapsed < MAXTIME && !objectionModeOn && currentMessageTmp.character != "judge"){
+      setTimeElapsed((timeElapsed)=>(timeElapsed+currentMessageTmp.sentence.length))
     }
     else if(timeElapsed >= MAXTIME && objectionModeOn === false && currentMessageTmp.type != "verdict"){
       setTimeout(()=>{setShowGavel(true)}, 3000)
@@ -387,7 +440,7 @@ function App() {
       else if (messages[currentMessageIndex].character === "phoenix" && messages[currentMessageIndex]["for_judge"] === false){
         getMessagesNormal("edgeworth", 1)
       }
-      else if (messages[currentMessageIndex].character === "judge"){
+      else if (messages[currentMessageIndex].character === "judge" && currentMessageTmp.type != "verdict" && currentMessageTmp.type != "adjourned"){
         if(randomNum < 70){
           getMessagesNormal("phoenix", 1)
         } else{
@@ -398,6 +451,7 @@ function App() {
   }
   
   function startObjection(){
+    setCards([])
     setBlackout(!blackout)
     setPhoenixAnimForce(true)
     setPhoenixAnim("deskslam")
@@ -421,6 +475,29 @@ function App() {
     setTimeout(()=>{setObjectionBubbleVisible(false)}, 2200)
     //setTimeout(()=>{stop()}, 50000)
   }
+
+
+  const moveDoors = ({direction}) =>{
+    if(direction === "close"){
+      setDoorsDivClass("doorsDivVisible")
+      setLeftDoorClass("closingDoorLeft")
+      setRightDoorClass("closingDoorRight")
+    }
+    else if(direction === "open"){
+      setLeftDoorClass("openingDoorLeft")
+      setRightDoorClass("openingDoorRight")
+      setTimeout(()=>{setDoorsDivClass("doorsDivHidden")}, 4000)
+    }
+  }
+
+  // TODO
+  async function getIPdata(){
+    const IPdata = await fetchIPdata()
+    console.log(IPdata)
+  }
+
+  // -------------------  RENDERING FUNCTIONS ------------------------
+
 
   const renderBlackout = () => {
     if (blackout){
@@ -453,19 +530,6 @@ function App() {
       </div>
     </div>
     )
-  }
-
-  const moveDoors = ({direction}) =>{
-    if(direction === "close"){
-      setDoorsDivClass("doorsDivVisible")
-      setLeftDoorClass("closingDoorLeft")
-      setRightDoorClass("closingDoorRight")
-    }
-    else if(direction === "open"){
-      setLeftDoorClass("openingDoorLeft")
-      setRightDoorClass("openingDoorRight")
-      setTimeout(()=>{setDoorsDivClass("doorsDivHidden")}, 4000)  
-    }
   }
 
   const renderObjectionForm = () => {
@@ -524,33 +588,52 @@ function App() {
     if(courtStarted === false){
       return(
         <div>
-          <div className="courtNotStartedBackground">
-            <div style={{position: "absolute", top:"50%", left:"40%"}}>
+          <div className="courtNotStartedMessage">
               <AwesomeButton 
+                style={{position: "absolute", top: "80%", left: "50%", transform: "translate(-50%, -50%)"}}
                 size="large"
                 type="primary"
                 onPress={()=>{
-                    moveDoors({direction:"open"})
-                    setCourtstarted(true)
-                    startingDialogue()                    
-                    setTimeout(()=>{setShowGavel(true)},1000)  
+                    setTimeout(()=>{
+                      moveDoors({direction:"open"})
+                      setCourtstarted(true)
+                      startingDialogue()                    
+                      setTimeout(()=>{setShowGavel(true)},1000)
+                    }, 400)
+                    
                   }
                 }
-                >Button
+                >
+                  Let's go!
               </AwesomeButton>
-            </div>
+            
           </div>
         </div>
       )
     }
   }
-
-  // TODO
-  async function getIPdata(){
-    const IPdata = await fetchIPdata()
-    console.log(IPdata)
+  
+  async function getSignatureJson(name, microsecond){
+    const response = await fetch(URL+`?name=${name}&microsecond=${microsecond}`)
+    const json = await response.json()
+    return json
   }
 
+  const renderUserSignature = (index) => {
+    return(
+      <CanvasDraw
+        style={{width: 200, height: 100, zIndex:1000, borderStyle:"solid", borderColor:"black"}}
+        hideInterface={true}
+        lazyRadius={0}
+        brushRadius={1}
+        hideGrid={true}
+        disabled={true}
+        ref={thisCanvas => signaturesRef.current[index] = thisCanvas} 
+      />
+    )
+  }
+
+  
   const renderLeaderboard = () => {
     if (showLeaderboard === true){
       let toggleRowColor = false
@@ -559,23 +642,30 @@ function App() {
           <div className="leaderboardBackground"></div>
             <div className="leaderboardDiv">
               <div className="leaderboardList">
-                <tr><th className="leaderboardTableHeading">Name</th><th className="leaderboardTableHeading">Score</th><th className="leaderboardTableHeading">Country</th></tr>
-                {leaderboardScores.map((score) =>{
+                <tr>
+                  <th className="leaderboardTableHeading">Name</th>
+                  <th className="leaderboardTableHeading">Score</th>
+                  <th className="leaderboardTableHeading">Country</th>
+                  <th className="leaderboardTableHeading">Signature</th>  
+                </tr>
+                {leaderboardScores.map((user, index) =>{
                   toggleRowColor = !toggleRowColor
                   if (toggleRowColor == true){
                     return(
-                    <tr key={score.id} className="leaderboardTableRow1">
-                      <td>{score.name}</td>
-                      <td>{score.score}</td>
-                      <td>{score.country}</td>
+                    <tr key={user.id} className="leaderboardTableRow1">
+                      <td>{user.name}</td>
+                      <td>{user.score}</td>
+                      <td>{user.country}</td>
+                      <td>{renderUserSignature(index)}</td>
                     </tr>
                     )
                   } else{
                     return(
-                      <tr key={score.id} className="leaderboardTableRow2">
-                        <td>{score.name}</td>
-                        <td>{score.score}</td>
-                        <td>{score.country}</td>
+                      <tr key={user.id} className="leaderboardTableRow2">
+                        <td>{user.name}</td>
+                        <td>{user.score}</td>
+                        <td>{user.country}</td>
+                        <td>{renderUserSignature(index)}</td>
                       </tr>
                       )
                     }
@@ -596,42 +686,44 @@ function App() {
     }
   }
  
+  //------------------------------------------------------------
+
   return (
     <div className="App">
        {renderCourtNotStarted()}
        {renderDoors()}
        <LeaderboardForm 
-        showLeaderboardForm={showLeaderboardForm} 
-        setShowLeaderBoardForm={setShowLeaderBoardForm} 
+        showLeaderboardForm={leaderboardFormVisible} 
+        setShowLeaderBoardForm={setLeaderboardFormVisible} 
         setShowLeaderboard={setShowLeaderboard} 
         phoenixScore={phoenixScore} 
         setLeaderboardScores={setLeaderboardScores}
         URL={URL}
         />
        {renderLeaderboard()}
-      <div className="mainView" style={styles.mainView}>
-        <div style={styles.phoenixScore}><p>{phoenixScore}</p></div>
-        <div style={styles.edgeworthScore}><p>{edgeworthScore}</p></div>
-        <div className="courtView" style={styles.courtView}>
+      <div className="mainView">
+        <div className="phoenixScore"><p>{phoenixScore}</p></div>
+        <div className="edgeworthScore"><p>{edgeworthScore}</p></div>
+        <div className="courtView">
           {renderBlackout()}
           {renderObjectionForm()}
           {renderPromptForm()}
           {renderObjectionBubble()}
-          <div style={styles.defenceView}>
+          <div className="defenceView">
             <DefenceView anim={phoenixAnim}></DefenceView>
           </div>
 
-          <div style={styles.prosecutionView}>
+          <div className="prosecutionView">
             <ProsecutionView anim={edgeworthAnim}></ProsecutionView>
           </div>
           
-          <div style={styles.judgeView}>
+          <div className="judgeView">
             {renderGavel()}
             <JudgeView anim={judgeAnim}></JudgeView>
           </div>
           {renderCardDiscardArea()}
         </div>
-        <div style={styles.objectionMeter}>
+        <div className="objectionMeter">
           <ObjectionMeter objectionPoints={objectionPoints} mode={meterMode}></ObjectionMeter>
         </div>
         <TextBox 
@@ -670,7 +762,7 @@ function App() {
         <div className="timeLeftBarDiv">
           <TimeLeftBar max={MAXTIME} current={timeElapsed}/>
         </div>
-        <div style={styles.cardRow}>
+        <div className="cardRow">
           <CardRow cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText} acceptingCard={acceptingCard} setAcceptingCard={setAcceptingCard}></CardRow>
         </div>
       </div>
@@ -678,7 +770,7 @@ function App() {
       <div style={{backgroundColor:"yellow", height: 200, width: 200, zIndex:100, position:"absolute"}} onClick={()=>{getMessagesNormal("phoenix", 1)}}></div>
       <div style={{backgroundColor:"yellow", height: 200, width: 200, zIndex:100, right:1, position:"absolute"}} onClick={()=>{getMessagesNormal("edgeworth", 1)}}></div>
       <div style={{backgroundColor:"green", height: 100, width: 100, zIndex:10000, right:400, position:"absolute"}} onClick={()=>{startObjection()}}></div>
-      <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setShowGavel(true);console.log(showLeaderboard)}}></div>
+      <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setShowGavel(true);}}></div>
       <div style={{backgroundColor:"blue", height: 50, width: 50, zIndex:10000, right:450, position:"absolute"}} onClick={()=>{setPromptForm(true)}}></div>
       <div style={{backgroundColor:"orange", height: 100, width: 200, zIndex:1000, right:300, position:"absolute"}} onClick={()=>{runDialogue()}}></div>
     </div>

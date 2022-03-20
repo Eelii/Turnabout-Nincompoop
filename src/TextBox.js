@@ -90,6 +90,7 @@ function TextBox({
     const nextMessageIndex = () =>{
         setCurrentMessageIndex((index)=>(index+1))
     }
+
     const currentMessage = messages[currentMessageIndex]
     if (currentMessage.character == "phoenix"){
         if (!phoenixAnimForce){
@@ -102,7 +103,7 @@ function TextBox({
     else if(currentMessage.character == "judge"){
         setJudgeAnim(emojisToJudgeAnimation(currentMessage.emoji_1.emoji, messageReady))
     }
-    
+
     const renderMsgBtn = () =>{
         if(currentMessageIndex < messages.length-1 && messageReady==true){
             return( <div style={styles.nextMsgBtn} 
@@ -127,6 +128,7 @@ function TextBox({
             return(<p></p>)
         }
     }
+
     const renderCharacterNameBox = () => {
         if(currentMessage.character == "phoenix"){
             return(<div style={styles.characterNameBoxPhoenix}><p style={styles.characterNameText}>Phoenix</p></div>)
@@ -137,6 +139,7 @@ function TextBox({
             return(<div style={styles.characterNameBoxJudge}><p style={styles.characterNameText}>Judge</p></div>)
         }
     }
+    
     const renderFetchingMessage = () => {
         if (fetchingMessage){
             return(

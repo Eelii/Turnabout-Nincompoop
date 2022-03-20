@@ -38,9 +38,9 @@ const styles = {
         fontSize: 20,
         display: "flex",
         justifyContent:"center",
+        zIndex: 100000,
         "boxShadow": "0px 3px 4px rgba(33,33,33,.7)"
-    },
-   
+    }
 }
 
 const postItColors = {
@@ -51,7 +51,7 @@ const postItColors = {
   4:"#fff740" // dark yellow
 }
 
-const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard}) =>{
+const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard, objectionCard}) =>{
     //const randomColorNum = Math.floor(Math.random() * 5)
     //const randomMarginNum = Math.floor(Math.random() * 40) + 5;
     //const randomRotateNum = Math.floor(Math.random() * (5+5) - 5)
@@ -73,29 +73,44 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
           if(state.xy[1] < 310 && acceptingCard === true){
             // TODO: +text
             //setCardStyle({...cardStyle, visibility:"hidden"})
-            setCardDroppedText(text)
+            if(!objectionCard){
+              setCardDroppedText({text:text, objectionCard:false}) 
+            } else{
+              setCardDroppedText({text:text, objectionCard:objectionCard})
+            }
             setAcceptingCard(false)
             setTimeout(()=>{setCards(cards.filter((item) => (item.text != text)))}, 1000)
-
           }
         }
       })
-
-    return(
-      <div>
-      <animated.div
-            {...bind()} 
-            style={{...cardStyle, x, y}}
-            >
-              <p>{text}</p>
-      </animated.div> 
-      </div>
-    )
+    if(!objectionCard){
+      return(
+        <div>
+          <animated.div
+                {...bind()} 
+                style={{...cardStyle, x, y}}
+                >
+                  <p>{text}</p>
+          </animated.div> 
+        </div>
+      )
+    } else{
+      return(
+        <div>
+          <animated.div
+                {...bind()} 
+                style={{...cardStyle, x, y}}
+                >
+                  <p className="gradientText">{text}</p>
+          </animated.div> 
+        </div>
+      )
+    }
 }
 
 
 const getCard = (card, cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard) => {
-  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText} acceptingCard={acceptingCard} setAcceptingCard={setAcceptingCard}></Card>)
+  return(<Card text={card.text} marginNum={card.marginNum} colorNum={card.colorNum} rotateNum={card.rotateNum} cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText} acceptingCard={acceptingCard} setAcceptingCard={setAcceptingCard} objectionCard={card.response}></Card>)
 }
 
 function CardRow({cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard}){

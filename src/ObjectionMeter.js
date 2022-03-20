@@ -18,8 +18,6 @@ function ObjectionMeter ({objectionPoints, mode}){
     }
 
     useEffect(()=>{
-        console.log("FIREHEIGTH")
-        console.log(fireHeight)
         setFireHeight((fireHeight)=>(fireHeight+100))
     },[objectionPoints])
    

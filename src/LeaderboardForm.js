@@ -1,26 +1,29 @@
 import CanvasDraw from "react-canvas-draw";
 import { AwesomeButton } from "react-awesome-button";
-import React, {useState} from "react"
+import React, { useState, useRef } from "react"
 
 
 const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setShowLeaderboard, phoenixScore, setLeaderboardScores, URL}) =>{
 
     const [printNameInput, setPrintNameInput] = useState("")
+    const canvasRef = useRef(null)
 
     async function fetchLeaderboardScores(){
         let response = await fetch(`${URL}/scores`)
         return response.json()
     }
 
-    async function postScore(scoreData){
-        const response = await fetch(`${URL}/scores?put=true&score=${scoreData.score}&name=${scoreData.name}`)
-        return response.json()
+    async function postFormToDB(){
+      const signatureJson = canvasRef.current.getSaveData()
+      const bodyData = JSON.stringify({signature:signatureJson, name:printNameInput, score:phoenixScore})
+      const response = await fetch(`${URL}/leaderboardform`, {method:"POST", body:bodyData, headers:{"Content-type": "application/json; charset=UTF-8","Access-Control-Allow-Origin":"*"}})
+      return response.json()
     }    
 
     async function submitLeaderboardForm(){
         setShowLeaderBoardForm(false)
         const score = phoenixScore
-        const scorePosted = await postScore({name:printNameInput, score:score})
+        const scorePosted = await postFormToDB()
         if(scorePosted.status = "ok"){
             getLeaderboardScores()
             setShowLeaderboard(true)
@@ -28,18 +31,24 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setShowLe
     }
 
     async function getLeaderboardScores(){
-        let scoreDocs = await fetchLeaderboardScores()
+        const scoreDocs = await fetchLeaderboardScores()
+        console.log("LEADERBOARD SCORES FETCH")
+        console.log(scoreDocs)
+        let leaderboardScoresTmp = []
         for(let i = 0; i < scoreDocs.length; i++){
-          setLeaderboardScores((leaderboardScores)=>(
-            [...leaderboardScores, 
-            { "id":scoreDocs[i]._id,
-              "score":scoreDocs[i].score,
-              "name":scoreDocs[i].name,
-              "country":scoreDocs[i].country,
-              //"datetime":scoreDocs[i].datetime
-            }
-            ]))
+          let newScoreData =  {
+            "id":scoreDocs[i]._id,
+            "score":scoreDocs[i].score,
+            "name":scoreDocs[i].name,
+            "country":scoreDocs[i].country,
+            "signature":scoreDocs[i].signature
+            //"microsecond":scoreDocs[i].microsecond
+          }
+          leaderboardScoresTmp.push(newScoreData)
+          console.log("TMP")
+          console.log(leaderboardScoresTmp)
         }
+        setLeaderboardScores(leaderboardScoresTmp)
     }
 
     if (showLeaderboardForm === true){
@@ -72,6 +81,7 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setShowLe
                       lazyRadius={0}
                       brushRadius={1}
                       hideGrid={true}
+                      ref={canvasRef}
                     />
                   </div>
                   <div className="signatureLine"></div>
