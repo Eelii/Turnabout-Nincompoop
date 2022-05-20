@@ -25,13 +25,15 @@ import gavelSound from "./sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
 import deskslamSound from "./sounds/sfx-deskslam.wav"
 import { defineHidden } from '@react-spring/shared';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { doorsDisappear, doorsOpen } from './actions';
 import LeaderboardForm from './LeaderboardForm';
 import { useWheel } from '@use-gesture/react';
-
+import Doors from './Doors';
 
 function App() {
-  const URL = "http://192.168.1.7:5000"
+  const doors = useSelector(state=>state.doors)
+  const URL = "http://localhost:5000"
   const TESTRESPONSE = {sentence:"start", character:"phoenix", emoji_1:{emoji:"😊"}, emoji_2:{emoji:"😊"}, emoji_3:{emoji:"😊"}, for_judge: false, is_question: false, is_thought: false, shouting: false}
   const signaturesRef = useRef([])
   const [phoenixAnim, setPhoenixAnim] = useState("normal")
@@ -64,14 +66,13 @@ function App() {
   const [promptFormText, setPromptFormText] = useState("")
   const [objectionBubbleVisible, setObjectionBubbleVisible] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const TIMEINTERVAL = 10
-  const MAXTIME = 100//2000
+  const MAXTIME = 500//2000
   const [fetchingMessage, setFetchingMessage] = useState(false)
   const [showGavel, setShowGavel] = useState(false)
   const [cardDroppedText, setCardDroppedText] = useState({text:"", objectionCard: false})
   
-  const [courtStarted, setCourtstarted] = useState(true)
-  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(true)
+  const [courtStarted, setCourtstarted] = useState(false)
+  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
 
   const [printNameInput, setPrintNameInput] = useState("")
@@ -85,6 +86,7 @@ function App() {
   const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume})
   const [playDeskslamSound, {stopDeskslamSound}] = useSound(deskslamSound, {volume:volume})
   const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
+  const dispatch = useDispatch()
 
   const styles ={
     cardDeck:{
@@ -575,6 +577,7 @@ function App() {
       )
     }
   }
+  
 
   const renderGavel = () => {
     if(showGavel){
@@ -595,10 +598,11 @@ function App() {
                 type="primary"
                 onPress={()=>{
                     setTimeout(()=>{
-                      moveDoors({direction:"open"})
+                      dispatch(doorsOpen())
                       setCourtstarted(true)
                       startingDialogue()                    
                       setTimeout(()=>{setShowGavel(true)},1000)
+                      setTimeout(()=>{dispatch(doorsDisappear())},3500)
                     }, 400)
                     
                   }
@@ -606,7 +610,6 @@ function App() {
                 >
                   Let's go!
               </AwesomeButton>
-            
           </div>
         </div>
       )
@@ -691,7 +694,8 @@ function App() {
   return (
     <div className="App">
        {renderCourtNotStarted()}
-       {renderDoors()}
+       
+       <Doors doors={doors}></Doors>
        <LeaderboardForm 
         showLeaderboardForm={leaderboardFormVisible} 
         setShowLeaderBoardForm={setLeaderboardFormVisible} 
