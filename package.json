@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mantine/core": "^4.2.5",
+    "@mantine/notifications": "^4.2.5",
+    "@modulz/radix-icons": "^4.0.0",
     "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -19,6 +22,7 @@
     "react-spring": "^9.4.2",
     "react-wavify": "^1.5.4",
     "redux": "^4.2.0",
+    "tabler-icons-react": "^1.48.0",
     "use-sound": "^4.0.1",
     "web-vitals": "^2.1.4"
   },

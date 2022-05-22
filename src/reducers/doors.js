@@ -1,7 +1,7 @@
 const doorsReducer = (state={direction:"static", open:false, visible:true}, action)=>{
     switch(action.type){
         case "DOORS_CLOSE":
-            return {...state, open:false, direction:"close"}
+            return {direction:"close", open:false, visible:true}
         case "DOORS_OPEN":
             return {...state, open:true, direction:"open"}
         case "DOORS_DISAPPEAR":

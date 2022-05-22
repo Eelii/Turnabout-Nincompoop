@@ -160,11 +160,6 @@ function TextBox({
             {renderFetchingMessage()}
             <div style={styles.messageText}>
                 <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn}></Message>
-                <p>
-                    {messages[currentMessageIndex].emoji_1.emoji}
-                    {messages[currentMessageIndex].emoji_2.emoji}
-                    {messages[currentMessageIndex].emoji_3.emoji}
-                </p>
             </div>
             {renderMsgBtn()}
         </div>
