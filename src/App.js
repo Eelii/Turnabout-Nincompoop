@@ -32,12 +32,14 @@ import { useWheel } from '@use-gesture/react';
 import Doors from './Doors';
 import CourtEndedOverlay from './CourtEndedOverlay';
 import CourtTimeline from "./CourtTimeline"
+import CourtConfetti from './CourtConfetti';
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
 import { CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
 import { Check, X } from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
+
 
 function App() {
   const doors = useSelector(state=>state.doors)
@@ -54,9 +56,9 @@ function App() {
   const [acceptingCard, setAcceptingCard] = useState(false)
   const [messageReady, setMessageReady] = useState(true)
   const [messages, setMessages]  = useState([TESTRESPONSE])
-  const [objectionPoints, setObjectionPoints] = useState(0)
+  const [objectionPoints, setObjectionPoints] = useState(151)
   const OBJECTION_POINTS_MAX = 150
-  const OBJECTION_POINTS_DECAY = 10
+  const OBJECTION_POINTS_DECAY = 15
   const [objectionModeOn, setObjectionModeOn] = useState(false)
   const [meterMode, setMeterMode] = useState("objection")
   const [currentMessageType, setCurrentMessageType] = useState(null)
@@ -78,8 +80,10 @@ function App() {
   
   const [courtStarted, setCourtstarted] = useState(false)
   const [courtEnded, setCourtEnded] = useState(false)
+  const [confettiVisible, setConfettiVisible] = useState(false)
   const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
   const [leaderboardVisible, setLeaderboardVisible] = useState(false)
+
 
 
   const [printNameInput, setPrintNameInput] = useState("")
@@ -381,11 +385,15 @@ function App() {
     if(currentMessageTmp.type == "adjourned" && messageReady === true){
       setTimeout(()=>{
         setShowGavel(true)
+        setConfettiVisible(true)
         setTimeout(() => {
           dispatch(doorsClose()) 
           setTimeout(()=>{
             setLeaderboardFormVisible(true)
             setCourtEnded(true)
+            setTimeout(()=>{
+              setConfettiVisible(false)
+            },10000)
           }, 5000)
         }, 3000);
       },2000)
@@ -691,6 +699,7 @@ function App() {
       <NotificationsProvider zIndex={99999}>
         <div className="App">
           {renderCourtNotStarted()}
+          {confettiVisible && <CourtConfetti/>}
           {courtEnded && <CourtEndedOverlay/>}
           <Doors doors={doors}></Doors>
           <LeaderboardForm 
@@ -725,7 +734,7 @@ function App() {
               </div>
               {renderCardDiscardArea()}
             </div>
-            <div className="objectionMeter">
+            <div className={objectionPoints>=OBJECTION_POINTS_MAX?"objectionMeterFull":"objectionMeter"} onClick={()=>{if(objectionPoints>=OBJECTION_POINTS_MAX && objectionModeOn == false){startObjection();console.log("HELLO")}}}>
               <ObjectionMeter objectionPoints={objectionPoints} mode={meterMode}></ObjectionMeter>
             </div>
             <TextBox 

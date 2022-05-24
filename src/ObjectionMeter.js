@@ -26,7 +26,7 @@ function ObjectionMeter ({objectionPoints, mode}){
     }
     if (mode=="objection"){
         return(
-        <diV>
+        <div>
             <div style={{width:100, height:150, borderStyle:"solid", borderColor:"gold", borderWidth: 2}}>
                 <Wave fill='blue'
                     paused={false}
@@ -38,15 +38,15 @@ function ObjectionMeter ({objectionPoints, mode}){
                     }}
                 />
                 <div style={{width:130, left:-15, top:-20, height: 50, position:"relative", borderRadius:10, backgroundImage:`url(${marble})`, textAlign:"center"}}>
-                <p className={meterFull?"gradientText":"objectionMeterTextNormal"}>OBJECTION!</p>
+                <p className={meterFull?"gradientText":"objectionMeterTextNormal"}>{meterFull?"OBJECTION!":"OBJECTION"}</p>
                 </div>
             </div>
-        </diV>
+        </div>
         )
     }
     else if (mode == "superobjection"){
         return(
-            <diV style={{animation: "shake 1s", animationIterationCount: "infinite"}}>
+            <div style={{animation: "shake 1s", animationIterationCount: "infinite"}}>
                 <div style={{width:100, height:150, borderStyle:"solid", borderColor:"gold", borderWidth: 2}}>
                         {renderFire()}
                         <Wave fill="url(#gradient)"
@@ -69,7 +69,7 @@ function ObjectionMeter ({objectionPoints, mode}){
                         <p className="gradientText">{objectionHeight}</p>
                         </div>
                 </div>
-            </diV>
+            </div>
             )
     }
 }
