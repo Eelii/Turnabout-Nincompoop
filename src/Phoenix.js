@@ -21,8 +21,10 @@ import phoenixHandsondesk2 from "./anims/phoenix/phoenix-handsondesk(b).gif"
 import phoenixDocument from "./anims/phoenix/phoenix-document(a).gif"
 import phoenixDocument2 from "./anims/phoenix/phoenix-document(b).gif"
 import phoenixConfident from "./anims/phoenix/phoenix-confident(a).gif"
-import phoenixConfidentTalking from "./anims/phoenix/phoenix-confident(b).gif"
+import phoenixConfident2 from "./anims/phoenix/phoenix-confident(b).gif"
 import phoenixObjection from "./anims/phoenix/phoenix-objecting-once.gif"
+import { useSelector, useDispatch } from 'react-redux';
+
 
 
 const anims = {
@@ -45,18 +47,90 @@ const anims = {
     "reading": phoenixDocument,
     "readingTalking": phoenixDocument2,
     "confident": phoenixConfident,
-    "confidentTalking":phoenixConfidentTalking,
+    "confidentTalking":phoenixConfident2,
     "objection":phoenixObjection
 }
 
- 
-function Phoenix({anim, style}){
+const getAnimation = (phoenix) => {
+    if(phoenix.talking == false){
+        switch(phoenix.animation){
+            case "normal":
+                return phoenixNormal
+            case "thinking":
+                return phoenixThinking
+            case "sweating":
+                return phoenixSweat
+            case "pointing":
+                return phoenixPointing
+            case "sheepish":
+                return phoenixSheepish
+            case "handsondesk":
+                return phoenixHandsondesk
+            case "reading":
+                return phoenixDocument
+            case "confident":
+                return phoenixConfident
+            case "deskslam":
+                return phoenixDeskslam
+            case "objection":
+                return phoenixObjection
+            }
+    }
+    if(phoenix.talking == true){
+        switch(phoenix.animation){
+            case "normal":
+                return phoenixNormal2
+            case "thinking":
+                return phoenixThinking2
+            case "sweating":
+                return phoenixSweat2
+            case "pointing":
+                return phoenixPointing2
+            case "sheepish":
+                return phoenixSheepish2
+            case "handsondesk":
+                return phoenixHandsondesk2
+            case "reading":
+                return phoenixDocument2
+            case "confident":
+                return phoenixConfident2
+            }
+    }
+    /*
+    "normal": phoenixNormal,
+    "normalTalking": phoenixNormal2,
+    "thinking": phoenixThinking,
+    "thinkingTalking": phoenixThinking2,
+    "nod": phoenixNod,
+    "headshake": phoenixHeadshake,
+    "ohshit": phoenixOhshit,
+    "sweating": phoenixSweat,
+    "sweatingTalking": phoenixSweat2,
+    "deskslam": phoenixDeskslam,
+    "pointing": phoenixPointing,
+    "pointingTalking": phoenixPointing2,
+    "sheepish": phoenixSheepish,
+    "sheepishTalking": phoenixSheepish2,
+    "handsondesk": phoenixHandsondesk,
+    "handsondeskTalking": phoenixHandsondesk2,
+    "reading": phoenixDocument,
+    "readingTalking": phoenixDocument2,
+    "confident": phoenixConfident,
+    "confidentTalking":phoenixConfidentTalking,
+    "objection":phoenixObjection
+    */
+}
 
-    const phoenixAnimation = (animationNum) =>{
-            return <img src={anims[animationNum]} style={{position:"absolute", top: 10, zIndex:3}}></img>
+ 
+function Phoenix(){
+    
+    const phoenixReducer = useSelector(state=>state.phoenix)
+    
+    const phoenixAnimation = () =>{
+        return <img src={getAnimation(phoenixReducer)} style={{position:"absolute", top: 10, zIndex:3}}></img>
     }
 
-    return(phoenixAnimation(anim))
+    return(phoenixAnimation(phoenixReducer.animation))
         
 }
 

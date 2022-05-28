@@ -1,13 +1,14 @@
 import CanvasDraw from "react-canvas-draw";
 import { useState, useEffect, useRef } from "react";
-import { Table } from "@mantine/core"
+import { Table, Center } from "@mantine/core"
+import { Trophy } from 'tabler-icons-react';
+import "./App.css"
 
 const Leaderboard = () =>{
 
     const BACKEND_URL = "http://localhost:5000"
     const signaturesRef = useRef([])
     const [leaderboardScores, setLeaderboardScores] = useState([])
-
 
     useEffect(()=>{
         getLeaderboardScores()
@@ -36,6 +37,7 @@ const Leaderboard = () =>{
             "score":scoreDocs[i].score,
             "name":scoreDocs[i].name,
             "country":scoreDocs[i].country,
+            "motto":scoreDocs[i].motto,
             "signature":scoreDocs[i].signature
             //"microsecond":scoreDocs[i].microsecond
           }
@@ -44,6 +46,18 @@ const Leaderboard = () =>{
         setLeaderboardScores(leaderboardScoresTmp)
     }
 
+    const trophyIcon = (index) =>{
+      switch(index){
+        case 0:
+          return(<Trophy style={{color:"#fee101"}}/>)
+        case 1:
+          return(<Trophy style={{color:"#d7d7d7"}}/>)
+        case 2:
+          return(<Trophy style={{color:"#d6af36"}}/>)
+        default:
+          return null
+      }
+    }
 
     const userSignature = (index) => {
         return(
@@ -61,9 +75,10 @@ const Leaderboard = () =>{
 
     const rows = leaderboardScores.map((score, index) => (
       <tr key={score.name+score.microsecond}>
-        <td>{score.score}</td>
-        <td>{score.name}</td>
+        <td className={index==0?"gradientText":null} style={{fontSize:25}}>{score.score}</td>
+        <td style={{textAlign:"left"}}>{trophyIcon(index)} {score.name}</td>
         <td>{score.country}</td>
+        <td><i>{score.motto}</i></td>
         <td>
           {userSignature(index)}
         </td>
@@ -71,22 +86,24 @@ const Leaderboard = () =>{
     ));
 
     return(
-      <div>
+      <Center style={{width:"100%", height:"100%", position:"absolute"}}>
           <div className="leaderboardDiv">
             <div className="leaderboardList">
             <Table fontSize={"xl"}>
               <thead>
                 <tr>
-                  <th>Score</th>
-                  <th>Name</th>
-                  <th>Country</th>
+                  <th style={{textAlign:"center"}}>Score</th>
+                  <th style={{textAlign:"center"}}>Name</th>
+                  <th style={{textAlign:"center"}}>Country</th>
+                  <th style={{textAlign:"center"}}>Motto</th>
+                  <th>Signature</th>
                 </tr>
               </thead>
               <tbody>{rows}</tbody>
             </Table>
-            </div>
           </div>
-      </div>
+          </div>
+          </Center>
     )
 }
 export default Leaderboard

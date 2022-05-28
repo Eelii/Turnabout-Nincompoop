@@ -1,36 +1,69 @@
 
 // TODO
-const phoenixReducer = (state={animation:"normal", score:1, forceAnimation:false, objection:false})=>{
-    switch(action.type){
-        case "PHOENIX_ANIM_NORMAL":
-            return {...state, animation:"normal"}
-        case "PHOENIX_ANIM_NORMAL_TALKING":
-            return {...state, animation:"normalTalking"}
-        case "PHOENIX_ANIM_SHEEPISH":
-            return {...state, animation:"sheepish"}
-        case "PHOENIX_ANIM_SHEEPISH_TALKING":
-            return {...state, animation:"sheepishTalking"}
-        case "PHOENIX_ANIM_SWEATING":
-            return {...state, animation:"sweating"}
-        case "PHOENIX_ANIM_SWEATING_TALKING":
-            return {...state, animation:"sweatingTalking"}
-        case "PHOENIX_ANIM_HANDSONDESK":
-            return {...state, animation:"handsondesk"}
-        case "PHOENIX_ANIM_HANDSONDESK_TALKING":
-            return {...state, animation:"handsondeskTalking"}
-        case "PHOENIX_ANIM_READING":
-            return {...state, animation:"reading"}
-        case "PHOENIX_ANIM_READING_TALKING":
-            return {...state, animation:"readingTalking"}
-        case "PHOENIX_ANIM_CONFIDENT":
-            return {...state, animation:"confident"}
-        case "PHOENIX_ANIM_CONFIDENT_TALKING":
-            return {...state, animation:"confidentTalking"}
-        case "PHOENIX_ANIM_POINTING":
-            return {...state, animation:"pointing"}
-        case "PHOENIX_ANIM_POINTING_TALKING":
-            return {...state, animation:"pointingTalking"}
-        default:
-            return state
+const phoenixReducer = (state={animation:"pointing", talking:false, score:1, forceAnimation:false, objection:false}, action)=>{
+
+    if(true ==false){
+        switch(action.type){
+            case "PHOENIX_MANUAL_ANIM":
+                return {...state, forceAnimation:true}
+            case "PHOENIX_ANIM_NORMAL":
+                return {...state, animation:"normal"}
+            case "PHOENIX_ANIM_SHEEPISH":
+                return {...state, animation:"sheepish"}
+            case "PHOENIX_ANIM_SWEATING":
+                return {...state, animation:"sweating"}
+            case "PHOENIX_ANIM_HANDSONDESK":
+                return {...state, animation:"handsondesk"}
+            case "PHOENIX_ANIM_READING":
+                return {...state, animation:"reading"}
+            case "PHOENIX_ANIM_CONFIDENT":
+                return {...state, animation:"confident"}
+            case "PHOENIX_ANIM_POINTING":
+                return {...state, animation:"pointing"}
+            case "PHOENIX_ANIM_THINKING":
+                return {...state, animation:"thinking"}
+            case "PHOENIX_START_TALKING":
+                return {...state, talking:true}
+            case "PHOENIX_STOP_TALKING":
+                return {...state, talking:false}
+            default:
+                return state
+        }
+    }
+    else{
+        switch(action.type){
+            case "PHOENIX_AUTO_ANIM":
+                return {...state, forceAnimation:false}
+            case "PHOENIX_ANIM_DESKSLAM":
+                return {...state, animation:"deskslam"}
+            case "PHOENIX_ANIM_OBJECTION":
+                return {...state, animation:"objection"}
+            case "PHOENIX_MANUAL_ANIM":
+                return {...state, forceAnimation:true}
+            case "PHOENIX_ANIM_NORMAL":
+                return {...state, animation:"normal"}
+            case "PHOENIX_ANIM_SHEEPISH":
+                return {...state, animation:"sheepish"}
+            case "PHOENIX_ANIM_SWEATING":
+                return {...state, animation:"sweating"}
+            case "PHOENIX_ANIM_HANDSONDESK":
+                return {...state, animation:"handsondesk"}
+            case "PHOENIX_ANIM_READING":
+                return {...state, animation:"reading"}
+            case "PHOENIX_ANIM_CONFIDENT":
+                return {...state, animation:"confident"}
+            case "PHOENIX_ANIM_POINTING":
+                return {...state, animation:"pointing"}
+            case "PHOENIX_ANIM_THINKING":
+                return {...state, animation:"thinking"}
+            case "PHOENIX_START_TALKING":
+                return {...state, talking:true}
+            case "PHOENIX_STOP_TALKING":
+                return {...state, talking:false}
+            default:
+                return state
+        }
     }
 }
+
+export default phoenixReducer

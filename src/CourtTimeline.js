@@ -35,9 +35,9 @@ const CourtTimeline = ({messages}) =>{
     }
 
     return(
-            <ScrollArea style={{zIndex: 99999, position:"absolute", top: 100, left: 10, height: 600, width: 500, backgroundColor:"whitesmoke", borderRadius: 10}} offsetScrollbars>
+            <ScrollArea style={{ height: "80vh", width: "95%", backgroundColor:"whitesmoke", borderRadius: 10}} offsetScrollbars>
                 <Timeline type="auto">
-                    {messages.map((message)=>timelineItem(message))}
+                    {messages.filter((message, index)=>index>0).map((message)=>timelineItem(message))}
                 </Timeline>
             </ScrollArea>
     )

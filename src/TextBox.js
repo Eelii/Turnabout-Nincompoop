@@ -4,6 +4,8 @@ import emojisToPhoenixAnimation from "./emojisToPhoenixAnimation.js"
 import emojisToEdgeworthAnimation from "./emojisToEdgeworthAnimation.js"
 import emojisToJudgeAnimation from "./emojisToJudgeAnimation.js"
 import ReactLoading from "react-loading"
+import { useSelector, useDispatch } from 'react-redux';
+import { phoenixAnimNormal, phoenixAnimConfident,phoenixAnimPointing,phoenixAnimSweating, phoenixAnimHandsondesk, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimThinking, phoenixStartTalking, phoenixStopTalking, phoenixAutoAnim } from './actions';
 
 
 const styles = {
@@ -85,16 +87,70 @@ function TextBox({
         timeElapsed,
         setTimeElapsed
     }){
+    
     const MAXTIME = 300
+    const currentMessage = messages[currentMessageIndex]
     const [messageReady, setMessageReady] = useState(false)
+    const dispatch = useDispatch()
+    const phoenix = useSelector(state=>state.phoenix)
+
+    
+
+    useEffect(()=>{
+        if(messageReady == true){
+            if(currentMessage.character == "phoenix"){
+                dispatch(phoenixStopTalking())
+            }
+        } else{
+            if(currentMessage.character == "phoenix"){
+                dispatch(phoenixStartTalking())
+            }
+        }
+    },[messageReady])
+
+    useEffect(()=>{
+        if(currentMessage.character == "phoenix"){
+            animatePhoenix(currentMessage.emoji_1.emoji)
+
+        }
+    },[currentMessageIndex])
+
+
+    const animatePhoenix = (emoji1) =>{
+        if(emoji1=="😕"){
+            dispatch(phoenixAnimThinking())
+        }
+        else if(emoji1=="😬"|| emoji1=="😅" || emoji1== "😕" || emoji1=="🙊"){
+            dispatch(phoenixAnimSheepish())
+        }
+        else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😖" || emoji1=="😌" || emoji1== "💔"){
+            dispatch(phoenixAnimSweating())
+        }
+        else if(emoji1 =="💪" || emoji1=="🙌" || emoji1=="👏" || emoji1 == "👊"){
+            dispatch(phoenixAnimPointing())
+        }
+        else if(emoji1=="😠" || emoji1=="😡" || emoji1=="😤"){
+            dispatch(phoenixAnimHandsondesk())
+        }
+        else if(emoji1=="😏"){
+            dispatch(phoenixAnimReading())
+        }
+        else if(emoji1 == "😉"){
+            dispatch(phoenixAnimConfident())
+        }
+        else{
+            dispatch(phoenixAnimNormal())
+        }
+    }
+
+
     const nextMessageIndex = () =>{
         setCurrentMessageIndex((index)=>(index+1))
     }
 
-    const currentMessage = messages[currentMessageIndex]
     if (currentMessage.character == "phoenix"){
         if (!phoenixAnimForce){
-            setPhoenixAnim(emojisToPhoenixAnimation(currentMessage.emoji_1.emoji, messageReady, objectionModeOn, phoenixAnim))
+            emojisToPhoenixAnimation(currentMessage.emoji_1.emoji, messageReady, objectionModeOn, phoenixAnim)
         } 
     }
     else if(currentMessage.character == "edgeworth" && !edgeworthAnimForce){
@@ -112,9 +168,17 @@ function TextBox({
                             if (timeElapsed < MAXTIME){
                                 setTimeElapsed((timeElapsed)=>(timeElapsed+3))
                             }
+                            console.log('CLICK');
+                            console.log(phoenix.forceAnimation);
+                            if(phoenix.forceAnimation == true){
+                                dispatch(phoenixAutoAnim())
+                                console.log(phoenix);
+                                console.log('TRUE');
+                            }
                             setMessageReady(false)
                             if(phoenixAnimForce == true){
                                 setPhoenixAnimForce(false)
+                                
                         }}}>
                         <div className="arrowsDiv">
                             <div className="arrowFirst"></div>

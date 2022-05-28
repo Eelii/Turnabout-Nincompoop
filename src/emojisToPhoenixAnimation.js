@@ -1,6 +1,7 @@
-function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, currentAnim){
+import {phoenixAnimNormal, phoenixStartTalking } from "./actions"
+import { useSelector, useDispatch } from 'react-redux';
 
-   
+function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, currentAnim){
     if(messageReadyState==false){
         if(!objectionModeOn){
             if(emoji1=="😕"){

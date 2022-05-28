@@ -25,7 +25,7 @@ import TimeLeftBar from './TimeLeftBar';
 import deskslamSound from "./sounds/sfx-deskslam.wav"
 import { defineHidden } from '@react-spring/shared';
 import { useSelector, useDispatch } from 'react-redux';
-import { doorsClose, doorsDisappear, doorsOpen } from './actions';
+import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './actions';
 import LeaderboardForm from './LeaderboardForm';
 import Leaderboard from './Leaderboard';
 import { useWheel } from '@use-gesture/react';
@@ -33,12 +33,17 @@ import Doors from './Doors';
 import CourtEndedOverlay from './CourtEndedOverlay';
 import CourtTimeline from "./CourtTimeline"
 import CourtConfetti from './CourtConfetti';
+import PostCourtView from './PostCourtView';
+
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
 import { CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
 import { Check, X } from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
+import {useKey, useSpeech, useAudio} from 'react-use';
+
+import {phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection} from "./actions"
 
 
 function App() {
@@ -78,11 +83,11 @@ function App() {
   const [cardDroppedText, setCardDroppedText] = useState({text:"", objectionCard: false})
   
   
-  const [courtStarted, setCourtstarted] = useState(false)
-  const [courtEnded, setCourtEnded] = useState(false)
+  const [courtStarted, setCourtstarted] = useState(!false)
+  const [courtEnded, setCourtEnded] = useState(!false)
   const [confettiVisible, setConfettiVisible] = useState(false)
   const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
-  const [leaderboardVisible, setLeaderboardVisible] = useState(false)
+  const [leaderboardVisible, setLeaderboardVisible] = useState(!false)
 
 
 
@@ -100,6 +105,13 @@ function App() {
 
   const [backendOnline, setBackendOnline] = useState(undefined)
   const dispatch = useDispatch()
+  const phoenix = useSelector(state=>state.phoenix)
+
+
+  const [audioDeskslam, audioDeskslamState, audioDeskslamControls, ref] = useAudio({
+    src: deskslamSound,
+    autoPlay: false,
+  });
 
   const styles ={
     cardDeck:{
@@ -113,6 +125,39 @@ function App() {
       backgroundImage:`url(${table})`
     }
   }
+
+  // ----------------------------------------
+
+  const slamDesk = () =>{
+    const slamVolume = volume
+    console.log('Manual anim');
+    dispatch(phoenixManualAnim())
+    dispatch(phoenixAnimDeskslam())
+    console.log('SLAMDESK VOLUME');
+    console.log(volume);
+    console.log('SLAMVOL');
+    console.log(slamVolume);
+    console.log(audioDeskslamState)
+    audioDeskslamControls.volume(volume)
+    audioDeskslamControls.play()
+    setTimeout(()=>{
+      console.log('auto anim');
+      dispatch(phoenixAutoAnim())
+    },1500)
+  }
+
+  const normal = () =>{
+    dispatch(phoenixManualAnim())
+    dispatch(phoenixAnimNormal())
+    dispatch(()=>{
+      dispatch(phoenixAutoAnim())
+    },1500)
+  }
+  useKey('ArrowUp', slamDesk);
+  useKey("ArrowDown", normal)
+  
+
+  // -------------------------------------
 
   function getNewCard(text, objectionResponse=false){
     if(objectionResponse==false){
@@ -346,6 +391,11 @@ function App() {
   },[cards])
 
   useEffect(()=>{
+    console.log('VOLUME');
+    console.log(volume);
+  },[volume])
+
+  useEffect(()=>{
    //asdklöjfasdölkfj
   },backendOnline)
 
@@ -552,8 +602,12 @@ function App() {
   function startObjection(){
     setCards([])
     setBlackout(!blackout)
-    setPhoenixAnimForce(true)
-    setPhoenixAnim("deskslam")
+
+    //setPhoenixAnimForce(true)
+    dispatch(phoenixManualAnim())
+
+    //setPhoenixAnim("deskslam")
+    dispatch(phoenixAnimDeskslam())
     setTimeout(()=>{playDeskslamSound()}, 0.5)
     setObjectionForm(!objectionForm)
     setObjectionModeOn(true)
@@ -565,9 +619,10 @@ function App() {
     const randomNum = Math.ceil(Math.random()*(max - min) + min);*/
     setFetchingMessage(true)
     getMessagesNormal("phoenix", 1, prompt)
-    setPhoenixAnim("handsondesk")
+    //setPhoenixAnim("handsondesk")
+    dispatch(phoenixAnimHandsondesk())
     setObjectionForm(false)
-    setTimeout(()=>{setPhoenixAnim("objection")}, 1250)
+    setTimeout(()=>{dispatch(phoenixAnimObjection())}, 1250)
     setTimeout(()=>{setObjectionBubbleVisible(true);playPhoenixObjection()}, 1500)
     setTimeout(()=>{setBlackout(false)}, 1800)
     setTimeout(()=>{playCornered2()}, 1600)
@@ -693,15 +748,18 @@ function App() {
   }
  
   //------------------------------------------------------------
+  // {leaderboardVisible && <CourtTimeline messages={messages}/>}
   // {leaderboardVisible && <Leaderboard/>}
+
   return (
     <MantineProvider>
       <NotificationsProvider zIndex={99999}>
         <div className="App">
           {renderCourtNotStarted()}
           {confettiVisible && <CourtConfetti/>}
-          {courtEnded && <CourtEndedOverlay/>}
           <Doors doors={doors}></Doors>
+          {audioDeskslam}
+          {leaderboardVisible && <PostCourtView messages={messages}/>}
           <LeaderboardForm 
             showLeaderboardForm={leaderboardFormVisible} 
             setShowLeaderBoardForm={setLeaderboardFormVisible} 
@@ -709,9 +767,9 @@ function App() {
             phoenixScore={phoenixScore} 
             setLeaderboardScores={setLeaderboardScores}
             URL={URL}
+            messages={messages}
             />
-          {leaderboardVisible && <CourtTimeline messages={messages}/>}
-          {leaderboardVisible && <Leaderboard/>}
+          
           <div className="mainView">
             <div className="phoenixScore"><p>{phoenixScore}</p></div>
             <div className="edgeworthScore"><p>{edgeworthScore}</p></div>
@@ -781,7 +839,8 @@ function App() {
           <div style={{backgroundColor:"green", height: 100, width: 100, zIndex:10000, right:400, position:"absolute"}} onClick={()=>{startObjection()}}></div>
           <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setShowGavel(true);}}></div>
           <div style={{backgroundColor:"blue", height: 50, width: 50, zIndex:10000, right:450, position:"absolute"}} onClick={()=>{setPromptForm(true)}}></div>
-          <div style={{backgroundColor:"orange", height: 100, width: 200, zIndex:1000, right:300, position:"absolute"}} onClick={()=>{runDialogue()}}></div>
+          <div style={{backgroundColor:"orange", height: 100, width: 200, zIndex:1000, right:300, position:"absolute"}} onClick={()=>{dispatch(phoenixStartTalking());console.log(phoenix);}}></div>
+          <div style={{backgroundColor:"cyan", height: 100, width: 200, zIndex:1000, right:400, position:"absolute"}} onClick={()=>{console.log(phoenix);}}></div>
         </div>
       </NotificationsProvider>
     </MantineProvider>
