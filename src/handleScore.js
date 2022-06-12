@@ -1,7 +1,7 @@
 
 
 
-function handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, message, objectionPoints, setObjectionPoints, objectionModeOn){
+function handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, message, objectionPoints, setObjectionPoints, objectionModeOn){
     const emoji_score = {
         "🙌": 10,
         "😤": 7,
@@ -27,8 +27,8 @@ function handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworth
 
     if (Object.keys(emoji_score).includes(message_emoji_1)){
         if(message.character == "phoenix"){
-            setPhoenixScore((phoenixScore) => { return phoenixScore + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
-            if(!objectionModeOn){
+            setPhoenixScore((phoenixScore) => {return phoenixScore + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
+            if(!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
                 setObjectionPoints((objectionPoints) => {return objectionPoints + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
             }
         } else{
@@ -38,19 +38,19 @@ function handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworth
     else if (Object.keys(emoji_opposition_score).includes(message_emoji_1)){
         if(message.character == "phoenix"){
             setEdgeworthScore((edgeworthScore) => {return edgeworthScore + Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
-            if (!objectionModeOn){
+            if (!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
                 setObjectionPoints((objectionPoints) => {return objectionPoints - Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
             }
         } else{
             setPhoenixScore((phoenixScore) => {return phoenixScore + Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
-            if (!objectionModeOn){
+            if (!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
                 setObjectionPoints((objectionPoints) => {return objectionPoints + Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
             }
         }
     } else{
         if(message.character == "phoenix"){
             setPhoenixScore((phoenixScore) => {return phoenixScore + Math.floor(multiplier*prob*0.5)})
-            if (!objectionModeOn){
+            if (!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
                 setObjectionPoints((objectionPoints) => {return objectionPoints + Math.floor(multiplier*prob)})
             }
         } else{

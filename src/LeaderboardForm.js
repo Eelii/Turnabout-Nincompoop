@@ -40,12 +40,12 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
               onClose={() => setPopoverOpened(false)}
               style={{position:"relative", top: 400, width:400, zIndex:10000}} 
               target={<Select 
-                label="Select your motto" 
+                label="How do you want to be quoted?" 
                 size="md" 
                 placeholder="Nulla poena sine lege" 
                 nothingFound="No dialogue found..." 
                 onDropdownOpen={()=>setPopoverOpened(false)}
-                data={messages.filter((message,index)=>message.character=="phoenix" && index>0).map((filteredMessage)=>({value:filteredMessage.sentence, label:filteredMessage.sentence, image:phoenixProfile}))}
+                data={messages.filter((message,index)=>message.character=="phoenix" && index>0 && message.is_prompt != true).map((filteredMessage)=>({value:filteredMessage.sentence, label:filteredMessage.sentence, image:phoenixProfile}))}
                 onChange={(value)=>{setSelectedMotto(value)}}
                 zIndex={10000}
               />}
@@ -109,6 +109,7 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
                       submitLeaderboardForm()
                     } else{
                       setPopoverOpened(true)
+                      console.log(messages.filter((message,index)=>message.character=="phoenix" && index>0));
                     }
                   }
                 }

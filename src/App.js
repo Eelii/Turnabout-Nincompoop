@@ -27,7 +27,6 @@ import { defineHidden } from '@react-spring/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './actions';
 import LeaderboardForm from './LeaderboardForm';
-import Leaderboard from './Leaderboard';
 import { useWheel } from '@use-gesture/react';
 import Doors from './Doors';
 import CourtEndedOverlay from './CourtEndedOverlay';
@@ -38,7 +37,7 @@ import PostCourtView from './PostCourtView';
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
-import { CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
+import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
 import { Check, X } from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
 import {useKey, useSpeech, useAudio} from 'react-use';
@@ -61,9 +60,9 @@ function App() {
   const [acceptingCard, setAcceptingCard] = useState(false)
   const [messageReady, setMessageReady] = useState(true)
   const [messages, setMessages]  = useState([TESTRESPONSE])
-  const [objectionPoints, setObjectionPoints] = useState(151)
+  const [objectionPoints, setObjectionPoints] = useState(160)
   const OBJECTION_POINTS_MAX = 150
-  const OBJECTION_POINTS_DECAY = 15
+  const OBJECTION_POINTS_DECAY = 20
   const [objectionModeOn, setObjectionModeOn] = useState(false)
   const [meterMode, setMeterMode] = useState("objection")
   const [currentMessageType, setCurrentMessageType] = useState(null)
@@ -81,13 +80,15 @@ function App() {
   const [fetchingMessage, setFetchingMessage] = useState(false)
   const [showGavel, setShowGavel] = useState(false)
   const [cardDroppedText, setCardDroppedText] = useState({text:"", objectionCard: false})
+
+  const [randomQuote, setRandomQuote] = useState({quote:"", name:""})
   
   
-  const [courtStarted, setCourtstarted] = useState(!false)
-  const [courtEnded, setCourtEnded] = useState(!false)
+  const [courtStarted, setCourtstarted] = useState(false)
+  const [courtEnded, setCourtEnded] = useState(false)
   const [confettiVisible, setConfettiVisible] = useState(false)
   const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
-  const [leaderboardVisible, setLeaderboardVisible] = useState(!false)
+  const [leaderboardVisible, setLeaderboardVisible] = useState(false)
 
 
 
@@ -98,9 +99,9 @@ function App() {
   const [test, setTest] = useState([])
 
   const [volume, setVolume] = useState(0)
-  const [playCornered2, { stop }] = useSound(cornered2, {volume});
+  const [playCornered2, { sound }] = useSound(cornered2, {volume});
   const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume})
-  const [playDeskslamSound, {stopDeskslamSound}] = useSound(deskslamSound, {volume:volume})
+  const [playDeskslamSound] = useSound(deskslamSound, {volume})
   const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
 
   const [backendOnline, setBackendOnline] = useState(undefined)
@@ -128,23 +129,6 @@ function App() {
 
   // ----------------------------------------
 
-  const slamDesk = () =>{
-    const slamVolume = volume
-    console.log('Manual anim');
-    dispatch(phoenixManualAnim())
-    dispatch(phoenixAnimDeskslam())
-    console.log('SLAMDESK VOLUME');
-    console.log(volume);
-    console.log('SLAMVOL');
-    console.log(slamVolume);
-    console.log(audioDeskslamState)
-    audioDeskslamControls.volume(volume)
-    audioDeskslamControls.play()
-    setTimeout(()=>{
-      console.log('auto anim');
-      dispatch(phoenixAutoAnim())
-    },1500)
-  }
 
   const normal = () =>{
     dispatch(phoenixManualAnim())
@@ -242,6 +226,15 @@ function App() {
     let response = await fetch(`${URL}/getresponse/objection?character=phoenix`)
     if(response.ok == true){
       return response.json()
+    }
+  }
+
+
+  async function fetchRandomTopQuote(){
+    let response = await fetch(`${URL}/topquote`)
+    if(response.ok == true){
+      const quoteJson = await response.json()
+      setRandomQuote(quoteJson)
     }
   }
 
@@ -367,6 +360,17 @@ function App() {
   },[])
 
   useEffect(()=>{
+    fetchRandomTopQuote()
+  },[backendOnline])
+
+  useEffect(()=>{
+    if(randomQuote != null){
+      console.log('QUOTE');
+      console.log(randomQuote);
+    }
+  },[randomQuote])
+
+  useEffect(()=>{
     console.log('MESSAGES:');
     console.log(messages);
   },[leaderboardVisible])
@@ -391,16 +395,6 @@ function App() {
   },[cards])
 
   useEffect(()=>{
-    console.log('VOLUME');
-    console.log(volume);
-  },[volume])
-
-  useEffect(()=>{
-   //asdklöjfasdölkfj
-  },backendOnline)
-
-
-  useEffect(()=>{
     // In case a verdict is interrupted with an objection.
     console.log(`OBJECTION MODE ON: ${objectionModeOn}`)
     // Remove?
@@ -413,7 +407,6 @@ function App() {
       setMessages((messages)=>messages.slice(0,currentMessageIndex+1))
     }
     if(objectionModeOn === false && timeElapsed >= MAXTIME){
-      console.log("OBJECTION MODE == FALSE && TIME ELAPSED > MAX")
       setTimeout(()=>{setShowGavel(true)}, 3000)
     }
   },[objectionModeOn])
@@ -421,13 +414,14 @@ function App() {
   useEffect(()=>{
     if(objectionPoints < 1){
       setObjectionModeOn(false)
+      sound.fade(volume, 0, 3000);
     }
   },[objectionPoints])
 
   useEffect(()=>{
 
     if(currentMessageIndex > 2){
-      handleScore(phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
+      handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
     }
 
     const currentMessageTmp = messages[currentMessageIndex]
@@ -630,6 +624,15 @@ function App() {
     //setTimeout(()=>{stop()}, 50000)
   }
 
+  function slamDesk(){
+    dispatch(phoenixManualAnim())
+    dispatch(phoenixAnimDeskslam())
+    playDeskslamSound()
+    setTimeout(()=>{
+      console.log('auto anim');
+      dispatch(phoenixAutoAnim())
+    },1500)
+  }
 
   // TODO
   async function getIPdata(){
@@ -708,6 +711,10 @@ function App() {
       return(
         <div>
           <div className="courtNotStartedMessage">
+            <div className="quote-splash" style={{position:"absolute", right: -200, border:"solid", borderColor:"red"}}>
+              <p>{randomQuote.quote}</p>
+              <p>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
+            </div>
               <AwesomeButton 
                 style={{position: "absolute", top: "80%", left: "50%", transform: "translate(-50%, -50%)"}}
                 size="large"
@@ -835,12 +842,6 @@ function App() {
               <CardRow cards={cards} setCards={setCards} setCardDroppedText={setCardDroppedText} acceptingCard={acceptingCard} setAcceptingCard={setAcceptingCard}></CardRow>
             </div>
           </div>
-          <div style={{backgroundColor: "red", left: 300,height: 100, width: 100, zIndex:10000, position:"absolute"}} onClick={()=>{setObjectionPoints((objectionPoints)=>(objectionPoints+10));setTimeElapsed((timeElapsed)=>(timeElapsed+1))}}></div>
-          <div style={{backgroundColor:"green", height: 100, width: 100, zIndex:10000, right:400, position:"absolute"}} onClick={()=>{startObjection()}}></div>
-          <div style={{backgroundColor:"red", height: 100, width: 100, zIndex:10000, right:350, position:"absolute"}} onClick={()=>{setShowGavel(true);}}></div>
-          <div style={{backgroundColor:"blue", height: 50, width: 50, zIndex:10000, right:450, position:"absolute"}} onClick={()=>{setPromptForm(true)}}></div>
-          <div style={{backgroundColor:"orange", height: 100, width: 200, zIndex:1000, right:300, position:"absolute"}} onClick={()=>{dispatch(phoenixStartTalking());console.log(phoenix);}}></div>
-          <div style={{backgroundColor:"cyan", height: 100, width: 200, zIndex:1000, right:400, position:"absolute"}} onClick={()=>{console.log(phoenix);}}></div>
         </div>
       </NotificationsProvider>
     </MantineProvider>

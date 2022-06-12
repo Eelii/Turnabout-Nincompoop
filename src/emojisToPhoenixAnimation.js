@@ -10,7 +10,7 @@ function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, cu
             else if(emoji1=="😬" || emoji1=="😅" || emoji1== "😕" || emoji1=="🙊"){
                 return "sheepishTalking"
             }
-            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😌" || emoji1=="😖" || emoji1== "💔"){
+            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😌" || emoji1=="😖" || emoji1=="😣" || emoji1== "💔"){
                 return "sweatingTalking"
             }
             else if(emoji1 =="💪" || emoji1=="🙌" || emoji1 == "👊"){
@@ -37,7 +37,7 @@ function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, cu
             else if(emoji1=="😬" || emoji1=="😅" || emoji1== "😕" || emoji1=="🙊"){
                 return "sheepishTalking"
             }
-            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😌" || emoji1=="😖" || emoji1== "💔"){
+            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😌" || emoji1=="😖" || emoji1=="😣" || emoji1== "💔"){
                 return "sweatingTalking"
             }
             else if(emoji1 =="💪" || emoji1=="🙌" || emoji1 == "👊"){
@@ -65,7 +65,7 @@ function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, cu
             else if(emoji1=="😬"|| emoji1=="😅" || emoji1== "😕" || emoji1=="🙊"){
                 return "sheepish"
             }
-            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😖" || emoji1=="😌" || emoji1== "💔"){
+            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😖" || emoji1=="😣" || emoji1=="😌" || emoji1== "💔"){
                 return "sweating"
             }
             else if(emoji1 =="💪" || emoji1=="🙌" || emoji1=="👏" || emoji1 == "👊"){
@@ -90,7 +90,7 @@ function emojisToPhoenixAnimation(emoji1, messageReadyState, objectionModeOn, cu
             else if(emoji1=="😬"|| emoji1=="😅" || emoji1== "😕" || emoji1=="🙊"){
                 return "sheepish"
             }
-            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😖" || emoji1=="😌" || emoji1== "💔"){
+            else if(emoji1=="😳" || emoji1=="😞" || emoji1=="😖" || emoji1=="😣" || emoji1=="😌" || emoji1== "💔"){
                 return "sweating"
             }
             else if(emoji1 =="💪" || emoji1=="🙌" || emoji1=="👏" || emoji1 == "👊"){

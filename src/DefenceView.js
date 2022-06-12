@@ -6,11 +6,10 @@ import { phoenixNormal, phoenixNormalTalking } from './actions';
 
 function DefenceView({anim}){
 
-    const phoenixReducer = useSelector(state=>state.phoenix)
     return(
         <div style={{position:"relative", top:"43%"}}>
             <DefenceBackground/>
-                <Phoenix phoenixReducer={phoenixReducer}/>
+                <Phoenix/>
             <DefenceBench/>
         </div>
     )

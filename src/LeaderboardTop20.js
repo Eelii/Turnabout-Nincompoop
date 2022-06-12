@@ -1,10 +1,10 @@
 import CanvasDraw from "react-canvas-draw";
 import { useState, useEffect, useRef } from "react";
-import { Table, Center } from "@mantine/core"
-import { Trophy } from 'tabler-icons-react';
+import { Table, Center, Button, Text } from "@mantine/core"
+import { Trophy, ThumbUp } from 'tabler-icons-react';
 import "./App.css"
 
-const Leaderboard = () =>{
+const LeaderboardTop20 = () =>{
 
     const BACKEND_URL = "http://localhost:5000"
     const signaturesRef = useRef([])
@@ -20,6 +20,8 @@ const Leaderboard = () =>{
             signaturesRef.current[index].loadSaveData(scoreData.signature)
           })
         }
+        console.log('LB');
+        console.log(leaderboardScores);
     },[leaderboardScores])
 
 
@@ -28,22 +30,37 @@ const Leaderboard = () =>{
         return response.json()
     }
 
+    async function likeQuote(documentID){
+      let response = await fetch(`${BACKEND_URL}/like?id=${documentID}`)
+      let json = await response.json()
+    }
+
     async function getLeaderboardScores(){
         const scoreDocs = await fetchLeaderboardScores()
         let leaderboardScoresTmp = []
         for(let i = 0; i < scoreDocs.length; i++){
           let newScoreData =  {
             "id":scoreDocs[i]._id,
+            "position":i+1,
             "score":scoreDocs[i].score,
             "name":scoreDocs[i].name,
+            "date":scoreDocs[i].date,
             "country":scoreDocs[i].country,
             "motto":scoreDocs[i].motto,
-            "signature":scoreDocs[i].signature
+            "signature":scoreDocs[i].signature,
+            "likes":scoreDocs[i].likes
             //"microsecond":scoreDocs[i].microsecond
           }
           leaderboardScoresTmp.push(newScoreData)
         }
         setLeaderboardScores(leaderboardScoresTmp)
+    }
+
+    const updateScoreLikes = (scoreId) =>{
+      const scoresTmp = leaderboardScores
+      console.log('RETURN:');
+      console.log(scoresTmp.map((score)=>{if(score.id == scoreId){return{...score, likes:score.likes+1}}else{return{score}}}));
+      setLeaderboardScores(scoresTmp.map((score)=>{if(score.id == scoreId){return{...score, likes:score.likes+1}}else{return score}}))
     }
 
     const trophyIcon = (index) =>{
@@ -74,11 +91,27 @@ const Leaderboard = () =>{
     }
 
     const rows = leaderboardScores.map((score, index) => (
-      <tr key={score.name+score.microsecond}>
+      <tr key={JSON.stringify(score.signature)}>
+        <td style={{fontSize:20}}>{score.position}</td>
         <td className={index==0?"gradientText":null} style={{fontSize:25}}>{score.score}</td>
         <td style={{textAlign:"left"}}>{trophyIcon(index)} {score.name}</td>
         <td>{score.country}</td>
-        <td><i>{score.motto}</i></td>
+        <td style={{fontSize:17}}>
+          <i>{score.motto}</i>
+          <br/>
+          <div style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
+            <Button
+              rightIcon={<ThumbUp/>}
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'cyan' }}
+              size="s"
+              style={{height:"50%"}}
+              onClick={()=>{likeQuote(leaderboardScores[index].id);updateScoreLikes(score.id)}}
+            >Like
+            </Button>
+            <Text style={{height:"50%", marginLeft: 20, color:"lime"}}>+{score.likes}</Text>
+          </div>
+        </td>
         <td>
           {userSignature(index)}
         </td>
@@ -87,11 +120,12 @@ const Leaderboard = () =>{
 
     return(
       <Center style={{width:"100%", height:"100%", position:"absolute"}}>
-          <div className="leaderboardDiv">
-            <div className="leaderboardList">
+        <div className="leaderboardDiv">
+          <div className="leaderboardList">
             <Table fontSize={"xl"}>
               <thead>
                 <tr>
+                  <th style={{textAlign:"center"}}>Position</th>
                   <th style={{textAlign:"center"}}>Score</th>
                   <th style={{textAlign:"center"}}>Name</th>
                   <th style={{textAlign:"center"}}>Country</th>
@@ -102,8 +136,8 @@ const Leaderboard = () =>{
               <tbody>{rows}</tbody>
             </Table>
           </div>
-          </div>
-          </Center>
+        </div>
+      </Center>
     )
 }
-export default Leaderboard
+export default LeaderboardTop20
