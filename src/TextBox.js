@@ -85,12 +85,13 @@ function TextBox({
         objectionModeOn, 
         fetchingMessage,
         timeElapsed,
-        setTimeElapsed
+        setTimeElapsed,
+        messageReady,
+        setMessageReady
     }){
     
     const MAXTIME = 300
     const currentMessage = messages[currentMessageIndex]
-    const [messageReady, setMessageReady] = useState(false)
     const dispatch = useDispatch()
     const phoenix = useSelector(state=>state.phoenix)
 

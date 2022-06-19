@@ -41,8 +41,10 @@ import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icon
 import { Check, X } from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
 import {useKey, useSpeech, useAudio} from 'react-use';
+import {VerdictText} from './VerdictText';
 
 import {phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection} from "./actions"
+import { current } from '@reduxjs/toolkit';
 
 
 function App() {
@@ -108,6 +110,9 @@ function App() {
   const dispatch = useDispatch()
   const phoenix = useSelector(state=>state.phoenix)
 
+  const [verdict, setVerdict] = useState(undefined)
+  const [verdictTextVisible, setVerdictTextVisibile] = useState(false)
+  
 
   const [audioDeskslam, audioDeskslamState, audioDeskslamControls, ref] = useAudio({
     src: deskslamSound,
@@ -424,12 +429,28 @@ function App() {
       handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
     }
 
-    const currentMessageTmp = messages[currentMessageIndex]
+    const currentMessage = messages[currentMessageIndex]
+    
+    if(currentMessage.type == "verdict"){
+      if(phoenixScore >= edgeworthScore){
+        setVerdict("not guilty")
+      } else{
+        setVerdict("guilty")
+      }
+    }
 
-    if(currentMessageTmp.type == "adjourned" && messageReady === true){
+    if(currentMessage.type == "adjourned"){
       setTimeout(()=>{
         setShowGavel(true)
         setConfettiVisible(true)
+        if(verdict == "guilty"){
+          dispatch(phoenixManualAnim())
+          dispatch(phoenixAnimSweating())
+        }
+        if(verdict == "not guilty"){
+          dispatch(phoenixManualAnim())
+          dispatch(phoenixAnimConfident())
+        }
         setTimeout(() => {
           dispatch(doorsClose()) 
           setTimeout(()=>{
@@ -449,7 +470,7 @@ function App() {
 
     if(currentMessageIndex === messages.length-1){
       if(timeElapsed < MAXTIME){
-        if(currentMessageTmp.character == "edgeworth" || currentMessageTmp.character == "judge"){
+        if(currentMessage.character == "edgeworth" || currentMessage.character == "judge"){
           setAcceptingCard(true)
         } else{
           setAcceptingCard(false)
@@ -459,7 +480,7 @@ function App() {
         if(!objectionModeOn){
           setAcceptingCard(false)
         } else{
-          if(currentMessageTmp.character == "edgeworth" || currentMessageTmp.character == "judge"){
+          if((currentMessage.character == "edgeworth" || currentMessage.character == "judge") && messages.length-1 == currentMessageIndex){
             setAcceptingCard(true)
           } else{
             setAcceptingCard(false)
@@ -475,8 +496,18 @@ function App() {
     if(messages.length > 1){
       runDialogue()
     }
-    setCurrentMessageType({"for_judge":currentMessageTmp.for_judge, "is_thought":currentMessageTmp.is_thought})
+    setCurrentMessageType({"for_judge":currentMessage.for_judge, "is_thought":currentMessage.is_thought})
   },[currentMessageIndex])
+
+  useEffect(()=>{
+    const currentMessage = messages[currentMessageIndex]
+    if(currentMessage.type == "verdict" && messageReady == true){
+      setTimeout(()=>{
+        setVerdictTextVisibile(true)
+      }, 1000)
+    }
+  }, [messageReady])
+
 
   useEffect(()=>{
     if(cardDroppedText.text != "" && cardDroppedText.objectionCard == false){
@@ -629,7 +660,6 @@ function App() {
     dispatch(phoenixAnimDeskslam())
     playDeskslamSound()
     setTimeout(()=>{
-      console.log('auto anim');
       dispatch(phoenixAutoAnim())
     },1500)
   }
@@ -696,7 +726,6 @@ function App() {
       )
     }
   }
-  
 
   const renderGavel = () => {
     if(showGavel){
@@ -753,7 +782,7 @@ function App() {
       )
     }
   }
- 
+
   //------------------------------------------------------------
   // {leaderboardVisible && <CourtTimeline messages={messages}/>}
   // {leaderboardVisible && <Leaderboard/>}
@@ -762,8 +791,9 @@ function App() {
     <MantineProvider>
       <NotificationsProvider zIndex={99999}>
         <div className="App">
+          {verdictTextVisible && <VerdictText verdict={verdict} setVerdictTextVisibile={setVerdictTextVisibile}></VerdictText>}
           {renderCourtNotStarted()}
-          {confettiVisible && <CourtConfetti/>}
+          {confettiVisible && <CourtConfetti verdict={verdict}/>}
           <Doors doors={doors}></Doors>
           {audioDeskslam}
           {leaderboardVisible && <PostCourtView messages={messages}/>}
@@ -819,6 +849,8 @@ function App() {
               fetchingMessage={fetchingMessage}
               timeElapsed={timeElapsed}
               setTimeElapsed={setTimeElapsed}
+              messageReady={messageReady}
+              setMessageReady={setMessageReady}
               >
           </TextBox>
           </div>

@@ -19,7 +19,7 @@ const PostCourtView = ({messages}) =>{
 
     return(
 
-        <div style={{zIndex:10000, position:"absolute", width:"100vw", height:"100vh", borderStyle:"solid", borderColor:"red", borderWidth:2}}>
+        <div style={{zIndex:10000, position:"absolute", width:"100vw", height:"100vh"}}>
             <CourtEndedOverlay/>
             <Tabs initialTab={activeTab.index} active={activeTab} onTabChange={onChange} color="blue" style={{width:"100%"}}>
                 <Tabs.Tab label="TOP 20" tabKey="TOP" style={{width:"50%", fontSize:30, backgroundColor:activeTab.key=="TOP"?"gray":"cyan", color:activeTab.key=="TOP"?"cyan":"gray", zIndex: 10001}}><LeaderboardTop20/></Tabs.Tab>

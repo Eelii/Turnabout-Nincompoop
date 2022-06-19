@@ -614,6 +614,61 @@ to {left:5px;}
   margin-right: -50%;
   transform: translate(-50%, -90%)
 }
+
+
+.verdictLetter{
+  visibility: hidden;
+  font-size: 180px;
+  position: relative;
+}
+.verdictWord{
+  visibility: hidden;
+  font-size: 170px;
+  position: relative;
+  margin-left: 50px;
+}
+#verdictWordsDiv{
+  background-color: antiquewhite;
+  position: absolute;
+  justify-content: center;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+#verdictLettersDiv{
+  background-color: antiquewhite;
+  opacity: 50%;
+  width: 100%;
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+#verdictFrame{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slidingIn{
+  animation: slideIn;
+  animation-timing-function: linear;
+}
+.slidingOut{
+  animation: slideOut;
+}
+
+@keyframes slideIn{
+  from{left: 1000px}
+  to{left: 0px}
+}
+@keyframes slideOut{
+  from{right:0px}
+  to{right: 2000px}
+}
 @keyframes closingLeft{
   from {right:100%;}
   to {right:50%}
@@ -654,6 +709,18 @@ to {left:5px;}
     transform: scale(1) rotate(-20deg);
     opacity: 1;
     
+  }
+}
+@keyframes thump{
+  from{
+    transform: scale(5);
+    -moz-transform: scale(5);
+    -webkit-transform: scale(5);
+  }
+  to{
+    transform: scale(1);
+    -moz-transform: scale(1);
+    -webkit-transform: scale(1);
   }
 }
 
