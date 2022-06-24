@@ -1,7 +1,12 @@
 import background from "./imgs/courtroom/judgestand.png"
 
 const JudgeBackground = () => {
-    return <img src={background} style={{position:"absolute", zIndex:-100, transform: "scale(1)"}}></img>
+
+    return(
+        <div style={{width: 256, height: 192}}>
+            <img src={background} style={{position:"absolute", transform: "scale(1)"}}></img>
+        </div>
+    )
 }
 
 export default JudgeBackground

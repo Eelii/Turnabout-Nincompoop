@@ -9,18 +9,22 @@ import { phoenixAnimNormal, phoenixAnimConfident,phoenixAnimPointing,phoenixAnim
 
 
 const styles = {
+    textBoxDiv:{
+        width: "100%",
+        position: "relative",
+        top: 30,
+        display: "flex",
+        justifyContent: "center"
+    },
     textBox:{
         width: 600,
         height: 100,
-        backgroundColor: "Grey",
-        opacity: 0.8,
+        backgroundColor: "whitesmoke",
         borderStyle: "solid",
         borderWidth: 3,
-        borderColor: "orange",
+        borderColor: "burlywood",
         borderRadius: 5,
         position: "relative",
-        top: 10,
-        left: "23%"
     },
     nextMsgBtn:{
         width: 60, 
@@ -52,6 +56,7 @@ const styles = {
         backgroundColor: "saddlebrown",
         width: 80,
         height: 30,
+        zIndex: 9999,
         textAlign: "center"
     },
     characterNameText:{
@@ -219,15 +224,15 @@ function TextBox({
         }
     }
     return(
-        <div>
-        <div style={styles.textBox}>
-            {renderCharacterNameBox()}
-            {renderFetchingMessage()}
-            <div style={styles.messageText}>
-                <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn}></Message>
+        <div style={styles.textBoxDiv}>
+            <div style={styles.textBox}>
+                {renderCharacterNameBox()}
+                {renderFetchingMessage()}
+                <div style={styles.messageText}>
+                    <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn}></Message>
+                </div>
+                {renderMsgBtn()}
             </div>
-            {renderMsgBtn()}
-        </div>
         </div>
     )
 }

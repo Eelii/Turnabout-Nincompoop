@@ -70,7 +70,7 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
       onDragEnd: (state) => {
           //console.log(`X: ${state.xy[0]} Y: ${state.xy[1]}`)
           //console.log(state)
-          if(state.xy[1] < 310 && acceptingCard === true){
+          if(state.xy[1] < 500 && acceptingCard === true){
             // TODO: +text
             //setCardStyle({...cardStyle, visibility:"hidden"})
             if(!objectionCard){
@@ -82,7 +82,8 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
             setTimeout(()=>{setCards(cards.filter((item) => (item.text != text)))}, 1000)
           }
         }
-      })
+    })
+    
     if(!objectionCard){
       return(
         <div>
@@ -97,10 +98,7 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
     } else{
       return(
         <div>
-          <animated.div
-                {...bind()} 
-                style={{...cardStyle, x, y}}
-                >
+          <animated.div {...bind()} style={{...cardStyle, x, y}}>
                   <p className="gradientText">{text}</p>
           </animated.div> 
         </div>

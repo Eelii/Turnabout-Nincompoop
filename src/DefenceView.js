@@ -7,7 +7,7 @@ import { phoenixNormal, phoenixNormalTalking } from './actions';
 function DefenceView({anim}){
 
     return(
-        <div style={{position:"relative", top:"43%"}}>
+        <div>
             <DefenceBackground/>
                 <Phoenix/>
             <DefenceBench/>

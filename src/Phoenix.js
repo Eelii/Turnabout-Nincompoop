@@ -127,7 +127,7 @@ function Phoenix(){
     const phoenixReducer = useSelector(state=>state.phoenix)
     
     const phoenixAnimation = () =>{
-        return <img src={getAnimation(phoenixReducer)} style={{position:"absolute", top: 10, zIndex:3}}></img>
+        return <img src={getAnimation(phoenixReducer)} style={{position:"relative", top: 10, zIndex:3}}></img>
     }
 
     return(phoenixAnimation(phoenixReducer.animation))

@@ -65,7 +65,6 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
                 <Text size="sm">{"(Huh? It's a drop-down list... I should probably select something.)"}</Text>
               </div>
             </Popover>
-            <AwesomeButton style={{position:"absolute", zIndex: 100000}} onPress={()=>{console.log(messages.filter((message)=>message.character=="phoenix").map((filteredMessage)=>({value:filteredMessage.sentence, label:filteredMessage.sentence})))}}></AwesomeButton>
             <div className="leaderboardForm">
               <div className="leaderboardFormTextDiv">
                 <div className="leaderboardFormHeading"><p style={{fontSize:10}}>HELDÖLKF</p></div>
@@ -81,8 +80,8 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
   
               <div className="userSignDiv">
                 <div className="printNameDiv">
-                  <p className="printNameText">Print Name</p>
                   <input className="printNameInput" maxLength={15} type="text" onChange={(e)=>{setPrintNameInput(e.target.value)}}></input>
+                  <p className="printNameText">Print name</p>
                 </div>
                 <div className="signatureDiv">
                   <div className="signatureArea">

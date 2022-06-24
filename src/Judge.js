@@ -26,7 +26,7 @@ const anims = {
 function Judge({anim, style}){
 
     const judgeAnimation = (animation) =>{
-            return <img src={anims[animation]} style={{position:"absolute"}}></img>
+        return <img src={anims[animation]} style={{position:"relative", bottom: 193}}></img>
     }
     return(judgeAnimation(anim))
 }

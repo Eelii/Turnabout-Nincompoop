@@ -29,6 +29,7 @@ import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './action
 import LeaderboardForm from './LeaderboardForm';
 import { useWheel } from '@use-gesture/react';
 import Doors from './Doors';
+import CourtBackground from './CourtBackground';
 import CourtEndedOverlay from './CourtEndedOverlay';
 import CourtTimeline from "./CourtTimeline"
 import CourtConfetti from './CourtConfetti';
@@ -40,10 +41,10 @@ import { MantineProvider, Button } from '@mantine/core';
 import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
 import { Check, X } from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
-import {useKey, useSpeech, useAudio} from 'react-use';
-import {VerdictText} from './VerdictText';
+import { useKey, useSpeech, useAudio } from 'react-use';
+import { VerdictText } from './VerdictText';
 
-import {phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection} from "./actions"
+import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection} from "./actions"
 import { current } from '@reduxjs/toolkit';
 
 
@@ -87,9 +88,9 @@ function App() {
   
   
   const [courtStarted, setCourtstarted] = useState(false)
-  const [courtEnded, setCourtEnded] = useState(false)
+  const [courtEnded, setCourtEnded] = useState(true)
   const [confettiVisible, setConfettiVisible] = useState(false)
-  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
+  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(true)
   const [leaderboardVisible, setLeaderboardVisible] = useState(false)
 
 
@@ -112,6 +113,8 @@ function App() {
 
   const [verdict, setVerdict] = useState(undefined)
   const [verdictTextVisible, setVerdictTextVisibile] = useState(false)
+  const [fetchingVerdict, setFetchingVerdict] = useState(false)
+  const [fetchingAdjourned, setFetchingAdjourned] = useState(false)
   
 
   const [audioDeskslam, audioDeskslamState, audioDeskslamControls, ref] = useAudio({
@@ -122,13 +125,13 @@ function App() {
   const styles ={
     cardDeck:{
       position:"absolute",
-      borderStyle: "solid",
-      borderColor: "brown",
       bottom:0,
       height:"25%",
       left: 10,
       right: 10,
-      backgroundImage:`url(${table})`
+      backgroundImage:`url(${table})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover"
     }
   }
 
@@ -443,14 +446,6 @@ function App() {
       setTimeout(()=>{
         setShowGavel(true)
         setConfettiVisible(true)
-        if(verdict == "guilty"){
-          dispatch(phoenixManualAnim())
-          dispatch(phoenixAnimSweating())
-        }
-        if(verdict == "not guilty"){
-          dispatch(phoenixManualAnim())
-          dispatch(phoenixAnimConfident())
-        }
         setTimeout(() => {
           dispatch(doorsClose()) 
           setTimeout(()=>{
@@ -502,6 +497,14 @@ function App() {
   useEffect(()=>{
     const currentMessage = messages[currentMessageIndex]
     if(currentMessage.type == "verdict" && messageReady == true){
+      if(verdict == "guilty"){
+        dispatch(phoenixManualAnim())
+        dispatch(phoenixAnimSweating())
+      }
+      if(verdict == "not guilty"){
+        dispatch(phoenixManualAnim())
+        dispatch(phoenixAnimConfident())
+      }
       setTimeout(()=>{
         setVerdictTextVisibile(true)
       }, 1000)
@@ -557,19 +560,23 @@ function App() {
 
   async function getVerdict(){
     setFetchingMessage(true)
+    setFetchingVerdict(true)
     let verdictMsg = await fetchVerdict()
     verdictMsg.type = "verdict"
     setMessages((messages)=>([...messages, verdictMsg]))
     setFetchingMessage(false)
+    setFetchingVerdict(false)
     return true
   }
 
   async function getAdjourned(){
     setFetchingMessage(true)
+    setFetchingAdjourned(true)
     let adjournedMsg = await fetchAdjourned()
     adjournedMsg.type = "adjourned"
     setMessages((messages)=>([...messages, adjournedMsg]))
     setFetchingMessage(false)
+    setFetchingAdjourned(false)
     return true
   }
 
@@ -595,7 +602,7 @@ function App() {
     if (timeElapsed < MAXTIME && !objectionModeOn && currentMessageTmp.character != "judge"){
       setTimeElapsed((timeElapsed)=>(timeElapsed+currentMessageTmp.sentence.length))
     }
-    else if(timeElapsed >= MAXTIME && objectionModeOn === false && currentMessageTmp.type != "verdict"){
+    else if(timeElapsed >= MAXTIME && objectionModeOn === false && currentMessageTmp.type != "verdict" && currentMessageTmp.type != "adjourned"){
       setTimeout(()=>{setShowGavel(true)}, 3000)
       closingDialogue()
       //await getVerdict()
@@ -700,6 +707,21 @@ function App() {
     }
   }
 
+  const renderFetchingVerdictText = () =>{
+    if(fetchingVerdict == true){
+      return(
+        <p className="fetchingVerdictText">Fetching verdict</p>
+      )
+    }
+  }
+  const renderFetchingAdjournedText = () =>{
+    if(fetchingAdjourned == true){
+      return(
+        <p className="fetchingVerdictText">Fetching adjourned</p>
+      )
+    }
+  }
+
   const renderPromptForm = () => {
     if (promptForm){
       return(
@@ -729,7 +751,11 @@ function App() {
 
   const renderGavel = () => {
     if(showGavel){
-      return(<img style={{zIndex:1, position:"absolute", top:"30%", height:180, width:200, left:20, top:150}} src={gavel}/>)
+      return(
+        <div className="gavelDiv">
+          <img style={{zIndex:1}} src={gavel}/>
+        </div>
+          )
     } else{
       return false
     }
@@ -740,7 +766,7 @@ function App() {
       return(
         <div>
           <div className="courtNotStartedMessage">
-            <div className="quote-splash" style={{position:"absolute", right: -200, border:"solid", borderColor:"red"}}>
+            <div className="quote-splash" style={{position:"absolute", right: -250}}>
               <p>{randomQuote.quote}</p>
               <p>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
             </div>
@@ -791,6 +817,7 @@ function App() {
     <MantineProvider>
       <NotificationsProvider zIndex={99999}>
         <div className="App">
+          <CourtBackground/>
           {verdictTextVisible && <VerdictText verdict={verdict} setVerdictTextVisibile={setVerdictTextVisibile}></VerdictText>}
           {renderCourtNotStarted()}
           {confettiVisible && <CourtConfetti verdict={verdict}/>}
@@ -811,15 +838,17 @@ function App() {
             <div className="phoenixScore"><p>{phoenixScore}</p></div>
             <div className="edgeworthScore"><p>{edgeworthScore}</p></div>
             <div className="courtView">
+              {renderFetchingVerdictText()}
+              {renderFetchingAdjournedText()}
               {renderBlackout()}
               {renderObjectionForm()}
               {renderPromptForm()}
               {renderObjectionBubble()}
-              <div className="defenceView">
-                <DefenceView anim={phoenixAnim}></DefenceView>
+              <div className="defenceViewDiv">
+                  <DefenceView anim={phoenixAnim}></DefenceView>
               </div>
 
-              <div className="prosecutionView">
+              <div className="prosecutionViewDiv">
                 <ProsecutionView anim={edgeworthAnim}></ProsecutionView>
               </div>
               
@@ -852,7 +881,7 @@ function App() {
               messageReady={messageReady}
               setMessageReady={setMessageReady}
               >
-          </TextBox>
+            </TextBox>
           </div>
           <div style={{position:"absolute", top: 300, left: 20, zIndex:1000}}>
             <ReactSlider

@@ -66,7 +66,7 @@ const anims = {
 function Edgeworth({anim, style}){
 
     const edgeworthAnimation = (animation) =>{
-            return <img src={anims[animation]} style={{position:"absolute", top: 10}}></img>
+            return <img src={anims[animation]} style={{position:"relative", top: 10}}></img>
     }
     return(edgeworthAnimation(anim))
 }
