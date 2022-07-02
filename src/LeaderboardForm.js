@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react"
 import {Select, Image, Popover, Button, Text} from "@mantine/core"
 import fax from "./imgs/site/fax.png"
 import phoenixProfile from "./imgs/site/phoenix_profile.png"
+import paper from "./imgs/site/paper.png"
 
 
 const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeaderboardVisible, phoenixScore, setLeaderboardScores, URL, messages}) =>{
@@ -32,13 +33,11 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
     
     if (showLeaderboardForm === true){
         return(
-          <div>
-            <Image src={fax} fit="contain" width={"15vw"} style={{zIndex:99999, position:"absolute"}}></Image>
-            
+          <div>            
             <Popover
               opened={popoverOpened}
               onClose={() => setPopoverOpened(false)}
-              style={{position:"relative", top: 400, width:400, zIndex:10000}} 
+              style={{position:"absolute", top: "40%", left: "5%", width: 300, zIndex: 10000}} 
               target={<Select 
                 label="How do you want to be quoted?" 
                 size="md" 
@@ -68,10 +67,13 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
             <div className="leaderboardForm">
               <div className="leaderboardFormTextDiv">
                 <div className="leaderboardFormHeading"><p style={{fontSize:10}}>HELDÖLKF</p></div>
-                <div style={{width:"78%", display:"flex", justifyContent:"center", fontSize:6, position:"relative", top:"15%", left:"10%"}}><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p></div>
+                <div style={{width:"78%", display:"flex", justifyContent:"center", fontSize:6, position:"absolute", top:"15%", left:"10%"}}>
+                 
+                </div>
                 <CanvasDraw
-                  style={{height:"100%", width:"100%", zIndex:1000}}
+                  style={{height:"100%", width:"100%", position: "absolute", zIndex:100000}}
                   hideInterface={true}
+                  imgSrc={paper}
                   lazyRadius={0}
                   brushRadius={1}
                   hideGrid={true}

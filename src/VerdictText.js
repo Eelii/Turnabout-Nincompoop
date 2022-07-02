@@ -35,7 +35,7 @@ const VerdictText = (props) =>{
                 }
                 const slideAndThumpDuration = slideDuration*1000+letterThumpTimeout*guiltyLettersRefs.length
                 setTimeout(()=>{animSlide(verdictLettersDivRef, "out", slideDuration)},slideAndThumpDuration)
-                setTimeout(()=>{setVerdictTextVisibile(false)},slideAndThumpDuration+slideDuration+1000)
+                setTimeout(()=>{setVerdictTextVisibile(false)},slideAndThumpDuration+slideDuration+2000)
             },slideDuration*1000)
         } else{
             let wordThumpTimeout = 1000
@@ -46,7 +46,7 @@ const VerdictText = (props) =>{
             }
             const slideAndThumpDuration = slideDuration*1000+wordThumpTimeout*notGuiltyWordsRefs.length
             setTimeout(()=>{animSlide(verdictWordsDivRef, "out", slideDuration)},slideAndThumpDuration)
-            setTimeout(()=>{setVerdictTextVisibile(false)},slideAndThumpDuration+slideDuration+1000)
+            setTimeout(()=>{setVerdictTextVisibile(false)},slideAndThumpDuration+slideDuration+2000)
             },slideDuration*1000)
         }
     }

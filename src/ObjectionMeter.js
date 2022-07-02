@@ -24,7 +24,7 @@ function ObjectionMeter ({objectionPoints, mode}){
     const renderFire = () =>{
         return(<img src={fire} style={{position:"absolute", height:200, zIndex:-1, width: 100}}></img>)
     }
-    if (mode=="objection"){
+    if (mode=="normal"){
         return(
         <div>
             <div style={{width:100, height:150, borderStyle:"solid", borderColor:"gold", borderWidth: 2}}>
@@ -44,7 +44,7 @@ function ObjectionMeter ({objectionPoints, mode}){
         </div>
         )
     }
-    else if (mode == "superobjection"){
+    else if (mode == "objection"){
         return(
             <div style={{animation: "shake 1s", animationIterationCount: "infinite"}}>
                 <div style={{width:100, height:150, borderStyle:"solid", borderColor:"gold", borderWidth: 2}}>
@@ -66,7 +66,7 @@ function ObjectionMeter ({objectionPoints, mode}){
                             </defs>
                         </Wave>
                         <div style={{width:130, left:-15, top:-20, height: 50, position:"relative", borderRadius:10, backgroundImage:`url(${marble})`, textAlign:"center"}}>
-                        <p className="gradientText">{objectionHeight}</p>
+                        <p className="gradientText">OBJECTION</p>
                         </div>
                 </div>
             </div>

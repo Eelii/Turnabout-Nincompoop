@@ -39,7 +39,7 @@ import PostCourtView from './PostCourtView';
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
 import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
-import { Check, X } from 'tabler-icons-react';
+import { Check, X , CaretUp} from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
 import { useKey, useSpeech, useAudio } from 'react-use';
 import { VerdictText } from './VerdictText';
@@ -60,6 +60,7 @@ function App() {
   const [judgeAnimForce, setJudgeAnimForce] = useState(false)
   const [gif, setGif] = useState(0)
   const [cards, setCards] = useState([])
+  const CARDS_LIMIT = 5
   const [acceptingCard, setAcceptingCard] = useState(false)
   const [messageReady, setMessageReady] = useState(true)
   const [messages, setMessages]  = useState([TESTRESPONSE])
@@ -67,7 +68,7 @@ function App() {
   const OBJECTION_POINTS_MAX = 150
   const OBJECTION_POINTS_DECAY = 20
   const [objectionModeOn, setObjectionModeOn] = useState(false)
-  const [meterMode, setMeterMode] = useState("objection")
+  const [meterMode, setMeterMode] = useState("normal")
   const [currentMessageType, setCurrentMessageType] = useState(null)
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const [phoenixScore, setPhoenixScore] = useState(1)
@@ -88,9 +89,9 @@ function App() {
   
   
   const [courtStarted, setCourtstarted] = useState(false)
-  const [courtEnded, setCourtEnded] = useState(true)
+  const [courtEnded, setCourtEnded] = useState(false)
   const [confettiVisible, setConfettiVisible] = useState(false)
-  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(true)
+  const [leaderboardFormVisible, setLeaderboardFormVisible] = useState(false)
   const [leaderboardVisible, setLeaderboardVisible] = useState(false)
 
 
@@ -171,7 +172,12 @@ function App() {
       const response = await fetchCardPrompt()
       const newCard = getNewCard(response.sentence)
       newCard.type = "normal"
-      setCards((cards)=>([...cards, newCard]))
+      console.log(`Cards length: ${cards.length}`);
+      console.log(`Cards limit: ${CARDS_LIMIT}`);
+      console.log(`Cards length <= CARDS_LIMIT: ${cards.length <= CARDS_LIMIT}`)
+      if(cards.length <= CARDS_LIMIT){
+        setCards((cards)=>([...cards, newCard]))
+      }
     }
   } 
 
@@ -180,7 +186,12 @@ function App() {
       const response = await fetchObjectionCard()
       const newCard = getNewCard(response.sentence, response)
       newCard.type = "objection"
-      setCards((cards)=>([...cards, newCard]))
+      console.log(`Cards length: ${cards.length}`);
+      console.log(`Cards limit: ${CARDS_LIMIT}`);
+      console.log(`Cards length <= CARDS_LIMIT: ${cards.length <= CARDS_LIMIT}`)
+      if(cards.length <= CARDS_LIMIT){
+        setCards((cards)=>([...cards, newCard]))
+      }
     }
   } 
 
@@ -422,6 +433,7 @@ function App() {
   useEffect(()=>{
     if(objectionPoints < 1){
       setObjectionModeOn(false)
+      setMeterMode("normal")
       sound.fade(volume, 0, 3000);
     }
   },[objectionPoints])
@@ -525,6 +537,9 @@ function App() {
     const nextMessageIndex = currentMessageIndex+1
     const nextMessage = messages[nextMessageIndex]
     const currentMessage = messages[currentMessageIndex]
+    if(messages.length > currentMessageIndex+1 && acceptingCard == true){
+      setAcceptingCard(false)
+    }
     console.log("messages")
     console.log(messages)
     console.log("currentMessage:")
@@ -633,6 +648,13 @@ function App() {
   
   function startObjection(){
     setCards([])
+    if(fetchingVerdict){
+      setFetchingVerdict(false)
+    }
+    if(fetchingAdjourned){
+      setFetchingAdjourned(false)
+    }
+    setFetchingAdjourned()
     setBlackout(!blackout)
 
     //setPhoenixAnimForce(true)
@@ -642,7 +664,10 @@ function App() {
     dispatch(phoenixAnimDeskslam())
     setTimeout(()=>{playDeskslamSound()}, 0.5)
     setObjectionForm(!objectionForm)
+    setAcceptingCard(false)
     setObjectionModeOn(true)
+    setFetchingVerdict(false)
+    setFetchingAdjourned(false)
   }
 
   function doTheObjection(prompt){
@@ -658,7 +683,10 @@ function App() {
     setTimeout(()=>{setObjectionBubbleVisible(true);playPhoenixObjection()}, 1500)
     setTimeout(()=>{setBlackout(false)}, 1800)
     setTimeout(()=>{playCornered2()}, 1600)
-    setTimeout(()=>{setObjectionBubbleVisible(false)}, 2200)
+    setTimeout(()=>{
+      setObjectionBubbleVisible(false)
+      setMeterMode("objection")
+    }, 2200)
     //setTimeout(()=>{stop()}, 50000)
   }
 
@@ -804,7 +832,11 @@ function App() {
   const renderCardDiscardArea = () =>{
     if(acceptingCard){
       return(
-        <div className="cardDiscardAreaActive"/>
+        <div className="cardDiscardAreaActive">
+          <div className="cardDiscardAreaShadowInner"></div>
+          <div className="cardDiscardAreaShadowOuter"></div>
+          <CaretUp size={80} color="rgba(0, 255, 0, 0.818)" opacity={"50%"}></CaretUp>
+        </div>
       )
     }
   }

@@ -34,7 +34,7 @@ const PostCourtView = ({messages}) =>{
                 onClose={() => setDrawerOpened(false)}
                 title="Court dialogue"
                 padding="xl"
-                size="25%"
+                size="30%"
                 zIndex={10000}
             >
                 {<CourtTimeline messages={messages}/>}
