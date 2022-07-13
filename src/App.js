@@ -10,6 +10,7 @@ import DefenceView from './DefenceView';
 import ProsecutionView from './ProsecutionView';
 import JudgeView from './JudgeView';
 import ObjectionMeter from './ObjectionMeter';
+import ObjectionForm from './ObjectionForm';
 import Column from './Column';
 import CardRow from './CardRow';
 import TextBox from './TextBox';
@@ -74,7 +75,7 @@ function App() {
   const [phoenixScore, setPhoenixScore] = useState(1)
   const [edgeworthScore, setEdgeworthScore] = useState(1)
   const [blackout, setBlackout] = useState(false)
-  const [objectionForm, setObjectionForm] = useState(false)
+  const [objectionFormVisible, setObjectionFormVisible] = useState(false)
   const [objectionFormText, setObjectionFormText] = useState("")
   const [promptForm, setPromptForm] = useState(false)
   const [promptFormText, setPromptFormText] = useState("")
@@ -663,7 +664,7 @@ function App() {
     //setPhoenixAnim("deskslam")
     dispatch(phoenixAnimDeskslam())
     setTimeout(()=>{playDeskslamSound()}, 0.5)
-    setObjectionForm(!objectionForm)
+    setObjectionFormVisible(true)
     setAcceptingCard(false)
     setObjectionModeOn(true)
     setFetchingVerdict(false)
@@ -678,7 +679,7 @@ function App() {
     getMessagesNormal("phoenix", 1, prompt)
     //setPhoenixAnim("handsondesk")
     dispatch(phoenixAnimHandsondesk())
-    setObjectionForm(false)
+    setObjectionFormVisible(false)
     setTimeout(()=>{dispatch(phoenixAnimObjection())}, 1250)
     setTimeout(()=>{setObjectionBubbleVisible(true);playPhoenixObjection()}, 1500)
     setTimeout(()=>{setBlackout(false)}, 1800)
@@ -715,23 +716,6 @@ function App() {
       )
     } else{
       return <div style={styles.blackoutOff}></div>
-    }
-  }
-
-  const renderObjectionForm = () => {
-    if (objectionForm){
-      return(
-        <div className="objectionForm">
-          <input type="text" maxLength={25} onChange={(e)=>(setObjectionFormText(e.target.value))} style={{width:"80%", display:"flex", float:"left", width:"70%", height:"20%", top:100}}></input>
-          <div className="objectionFormButton"
-            onClick={()=>{
-              doTheObjection(prompt=objectionFormText)
-              setObjectionFormText("")
-            }}>
-              Objection!
-          </div>
-        </div>
-      )
     }
   }
 
@@ -873,7 +857,7 @@ function App() {
               {renderFetchingVerdictText()}
               {renderFetchingAdjournedText()}
               {renderBlackout()}
-              {renderObjectionForm()}
+              {objectionFormVisible && <ObjectionForm doTheObjection={doTheObjection}/>}
               {renderPromptForm()}
               {renderObjectionBubble()}
               <div className="defenceViewDiv">

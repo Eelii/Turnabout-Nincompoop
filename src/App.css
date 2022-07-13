@@ -389,18 +389,32 @@ to {left:5px;}
   left: 36%;
 }
 .objectionFormButton{
-  width: 28%;
-  height: 100%;
-  background-color: red;
+  height: 98%;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
   float: right;
+  text-align: center;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.objectionFormButton:hover{
+  cursor: pointer;
+  border: 0.2rem solid rgb(35, 175, 0);
+  box-shadow: 0 0 .2rem rgb(23, 185, 1),
+            0 0 .2rem rgb(41, 197, 2),
+            0 0 2rem #16ec28,
+            0 0 0.8rem #0ecc1e,
+            0 0 2.8rem #13db0c,
+            inset 0 0 1.3rem #1dd80c; 
 }
 .objectionForm{
-  position: absolute;
-  left: 30%;
-  top: 20%;
-  width: 40%;
+  width: 80%;
   height: 40%;
-  z-index:99999;
+  z-index: 99999;
+  display: flex;
+  flex-direction: row;
   background-color: white;
   border-style: solid;
   border-color: saddlebrown;
@@ -408,7 +422,6 @@ to {left:5px;}
   animation: objectionFormFadeIn;
   animation-duration: 4s;
   animation-timing-function: linear;
-  justify-content: center
 }
 .blackoutOn{
   position: absolute;
