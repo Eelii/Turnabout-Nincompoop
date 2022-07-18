@@ -1,17 +1,17 @@
 import CanvasDraw from "react-canvas-draw";
 import { AwesomeButton } from "react-awesome-button";
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {Select, Image, Popover, Button, Text} from "@mantine/core"
 import fax from "./imgs/site/fax.png"
 import phoenixProfile from "./imgs/site/phoenix_profile.png"
-import paper from "./imgs/site/paper.png"
+import { loremIpsum } from 'react-lorem-ipsum';
 
-
-const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeaderboardVisible, phoenixScore, setLeaderboardScores, URL, messages}) =>{
+const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeaderboardVisible, phoenixScore, setLeaderboardScores, URL, messages, verdict}) =>{
 
     const [printNameInput, setPrintNameInput] = useState("")
     const [selectedMotto, setSelectedMotto] = useState(undefined)
     const [popoverOpened, setPopoverOpened] = useState(false)
+    const [lorem, setLorem] = useState(null)
     const canvasRef = useRef(null)
 
     async function postFormToDB(){
@@ -21,6 +21,10 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
       return response.json()
     }    
 
+    useEffect(()=>{
+      setLorem(createLorem())
+    },[])
+
     async function submitLeaderboardForm(){
         setShowLeaderBoardForm(false)
         const score = phoenixScore
@@ -28,6 +32,18 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
         if(scorePosted.status = "ok"){
             setLeaderboardVisible(true)
         }
+    }
+
+    const createLorem = () =>{
+      return(
+        loremIpsum({ p: 7, random:true }).map((text, index) => {
+          return(
+            <div style={{marginRight:"4%", marginLeft:"4%", marginTop:"1%", marginBottom:"1%"}} key={text}>
+              {index+1} § <br/> {text}
+            </div>
+          )
+          })
+      )
     }
 
     
@@ -65,15 +81,19 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
               </div>
             </Popover>
             <div className="leaderboardForm">
+
               <div className="leaderboardFormTextDiv">
-                <div className="leaderboardFormHeading"><p style={{fontSize:10}}>HELDÖLKF</p></div>
-                <div style={{width:"78%", display:"flex", justifyContent:"center", fontSize:6, position:"absolute", top:"15%", left:"10%"}}>
-                 
+                <div className="leaderboardFormHeading">
+                  <p style={{fontSize:20}}>CONGRATULATIONS</p>
+                  <br/>
+                  <p style={{fontSize:18}}>You {verdict=="not guilty"?"won":"lost"}!</p>
+                </div>
+                <div className="leaderboardFormMainText">
+                 {lorem}
                 </div>
                 <CanvasDraw
-                  style={{height:"100%", width:"100%", position: "absolute", zIndex:100000}}
+                  style={{height:"100%", width:"100%", position: "absolute", background:"argb(#00FFFFFF)"}}
                   hideInterface={true}
-                  imgSrc={paper}
                   lazyRadius={0}
                   brushRadius={1}
                   hideGrid={true}
@@ -82,7 +102,7 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
   
               <div className="userSignDiv">
                 <div className="printNameDiv">
-                  <input className="printNameInput" maxLength={15} type="text" onChange={(e)=>{setPrintNameInput(e.target.value)}}></input>
+                  <input className="printNameInput" maxLength={15} type="text" value={printNameInput} onChange={(e)=>{setPrintNameInput(e.target.value)}}></input>
                   <p className="printNameText">Print name</p>
                 </div>
                 <div className="signatureDiv">

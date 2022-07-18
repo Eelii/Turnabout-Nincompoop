@@ -23,7 +23,7 @@ import objectionBubble from "./anims/objection.gif"
 import gavel from "./anims/gavel.gif"
 import gavelSound from "./sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
-import deskslamSound from "./sounds/sfx-deskslam.wav"
+import deskSlamSound from "./sounds/sfx-deskslam.wav"
 import { defineHidden } from '@react-spring/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './actions';
@@ -40,12 +40,12 @@ import PostCourtView from './PostCourtView';
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
 import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
-import { Check, X , CaretUp} from 'tabler-icons-react';
+import { Check, X , CaretUp, Volume, Volume2, Volume3} from 'tabler-icons-react';
 import CourtEndedOVerlay from './CourtEndedOverlay';
 import { useKey, useSpeech, useAudio } from 'react-use';
 import { VerdictText } from './VerdictText';
 
-import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection} from "./actions"
+import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection, phoenixAnimOhShit} from "./actions"
 import { current } from '@reduxjs/toolkit';
 
 
@@ -81,7 +81,7 @@ function App() {
   const [promptFormText, setPromptFormText] = useState("")
   const [objectionBubbleVisible, setObjectionBubbleVisible] = useState(false)
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const MAXTIME = 1000//2000
+  const MAXTIME = 1000//1700
   const [fetchingMessage, setFetchingMessage] = useState(false)
   const [showGavel, setShowGavel] = useState(false)
   const [cardDroppedText, setCardDroppedText] = useState({text:"", objectionCard: false})
@@ -106,7 +106,7 @@ function App() {
   const [volume, setVolume] = useState(0)
   const [playCornered2, { sound }] = useSound(cornered2, {volume});
   const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume})
-  const [playDeskslamSound] = useSound(deskslamSound, {volume})
+  const [playDeskSlamSound] = useSound(deskSlamSound, {volume})
   const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
 
   const [backendOnline, setBackendOnline] = useState(undefined)
@@ -120,7 +120,7 @@ function App() {
   
 
   const [audioDeskslam, audioDeskslamState, audioDeskslamControls, ref] = useAudio({
-    src: deskslamSound,
+    src: deskSlamSound,
     autoPlay: false,
   });
 
@@ -142,13 +142,25 @@ function App() {
 
   const normal = () =>{
     dispatch(phoenixManualAnim())
-    dispatch(phoenixAnimNormal())
+    dispatch(phoenixAnimOhShit())
     dispatch(()=>{
       dispatch(phoenixAutoAnim())
     },1500)
   }
-  useKey('ArrowUp', slamDesk);
+  const addPointEdgeworth = () =>{
+    setEdgeworthScore((edgeworthScore)=>edgeworthScore+1)
+  }
+
+  const addPointPhoenix = () =>{
+    setPhoenixScore((phoenixScore)=>phoenixScore+1)
+  }
+
+  
+
+  useKey('ArrowUp', handleKeyPressEvent);
   useKey("ArrowDown", normal)
+  useKey("ArrowRight", addPointEdgeworth)
+  useKey("ArrowLeft", addPointPhoenix)
   
 
   // -------------------------------------
@@ -201,11 +213,10 @@ function App() {
 
   async function fetchSentenceSpeaking(character, objectionModeOn=false, prompt=false){
     let response
-    if (prompt == false){
-      response = await fetch(objectionModeOn&character=="phoenix"?`${URL}/getresponse/objection?character=${character}`:`${URL}/getresponse/speaking?character=${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
-    } else{
-      console.log(`Fetching with prompt ${prompt}, objection mode: ${objectionModeOn}`)
+    if (prompt){
       response = await fetch(objectionModeOn?`${URL}/getresponse/speaking?character=${character}&prompt=${prompt}`:`${URL}/getresponse/speaking?character=${character}&prompt=${prompt}`, {headers:{"Access-Control-Allow-Origin":"*"}})
+    } else{
+      response = await fetch(objectionModeOn&character=="phoenix"?`${URL}/getresponse/objection?character=${character}`:`${URL}/getresponse/speaking?character=${character}`, {headers:{"Access-Control-Allow-Origin":"*"}})
     }
     if(response.ok == true){
       return response.json()
@@ -440,6 +451,10 @@ function App() {
   },[objectionPoints])
 
   useEffect(()=>{
+    console.log(volume);
+  },[volume])
+
+  useEffect(()=>{
 
     if(currentMessageIndex > 2){
       handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoenixScore, setEdgeworthScore, messages[currentMessageIndex], objectionPoints, setObjectionPoints, objectionModeOn)
@@ -555,7 +570,7 @@ function App() {
 
   async function getMessagesNormal (character, numOfMessages, prompt=undefined, objectionResponse=false) {
 
-    if(objectionResponse!=false){
+    if(objectionResponse){
       setMessages((messages)=>([...messages, objectionResponse]))
     } else{
       setFetchingMessage(true)
@@ -663,12 +678,12 @@ function App() {
 
     //setPhoenixAnim("deskslam")
     dispatch(phoenixAnimDeskslam())
-    setTimeout(()=>{playDeskslamSound()}, 0.5)
+    setTimeout(()=>{playDeskSlamSound()}, 0.5)
     setObjectionFormVisible(true)
     setAcceptingCard(false)
     setObjectionModeOn(true)
-    setFetchingVerdict(false)
-    setFetchingAdjourned(false)
+    //setFetchingVerdict(false)
+    //setFetchingAdjourned(false)
   }
 
   function doTheObjection(prompt){
@@ -694,7 +709,9 @@ function App() {
   function slamDesk(){
     dispatch(phoenixManualAnim())
     dispatch(phoenixAnimDeskslam())
-    playDeskslamSound()
+    console.log('VOLUME');
+    console.log(volume)
+    playDeskSlamSound()
     setTimeout(()=>{
       dispatch(phoenixAutoAnim())
     },1500)
@@ -778,8 +795,8 @@ function App() {
       return(
         <div>
           <div className="courtNotStartedMessage">
-            <div className="quote-splash" style={{position:"absolute", right: -250}}>
-              <p>{randomQuote.quote}</p>
+            <div className="quote-splash" style={{position:"absolute", right: -500, maxWidth:"30vw"}}>
+              <p style={{fontSize: 20}}>{randomQuote.quote}</p>
               <p>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
             </div>
               <AwesomeButton 
@@ -834,7 +851,7 @@ function App() {
       <NotificationsProvider zIndex={99999}>
         <div className="App">
           <CourtBackground/>
-          {verdictTextVisible && <VerdictText verdict={verdict} setVerdictTextVisibile={setVerdictTextVisibile}></VerdictText>}
+          {verdictTextVisible && <VerdictText verdict={verdict} setVerdictTextVisibile={setVerdictTextVisibile} volume={volume}></VerdictText>}
           {renderCourtNotStarted()}
           {confettiVisible && <CourtConfetti verdict={verdict}/>}
           <Doors doors={doors}></Doors>
@@ -848,6 +865,7 @@ function App() {
             setLeaderboardScores={setLeaderboardScores}
             URL={URL}
             messages={messages}
+            verddict={verdict}
             />
           
           <div className="mainView">
@@ -896,10 +914,12 @@ function App() {
               setTimeElapsed={setTimeElapsed}
               messageReady={messageReady}
               setMessageReady={setMessageReady}
+              volume={volume}
               >
             </TextBox>
           </div>
           <div style={{position:"absolute", top: 300, left: 20, zIndex:1000}}>
+            
             <ReactSlider
               className="volumeSlider"
               thumbClassName="volumeSlider-thumb"
@@ -909,6 +929,9 @@ function App() {
               onChange={(value)=>{setVolume(value/100)}}
               renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}>
             </ReactSlider>
+            {volume<=0?<Volume3></Volume3>:null}
+            {volume>0 && volume<=0.5?<Volume2></Volume2>:null}
+            {volume>0.5?<Volume></Volume>:null}
           </div>
           
           <div style={styles.cardDeck}>

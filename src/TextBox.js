@@ -92,15 +92,14 @@ function TextBox({
         timeElapsed,
         setTimeElapsed,
         messageReady,
-        setMessageReady
+        setMessageReady,
+        volume
     }){
     
     const MAXTIME = 300
     const currentMessage = messages[currentMessageIndex]
     const dispatch = useDispatch()
     const phoenix = useSelector(state=>state.phoenix)
-
-    
 
     useEffect(()=>{
         if(messageReady == true){
@@ -229,7 +228,7 @@ function TextBox({
                 {renderCharacterNameBox()}
                 {renderFetchingMessage()}
                 <div style={styles.messageText}>
-                    <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn}></Message>
+                    <Message message={messages[currentMessageIndex].sentence} setMessageReady={setMessageReady} objectionModeOn={objectionModeOn} volume={volume}></Message>
                 </div>
                 {renderMsgBtn()}
             </div>

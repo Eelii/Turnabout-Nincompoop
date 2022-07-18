@@ -9,7 +9,7 @@ import phoenixNormal2 from "./anims/phoenix/phoenix-normal(b).gif"
 import phoenixThinking from "./anims/phoenix/phoenix-thinking(a).gif"
 import phoenixThinking2 from "./anims/phoenix/phoenix-thinking(b).gif"
 import phoenixNod from "./anims/phoenix/phoenix-nodding.gif"
-import phoenixOhshit from "./anims/phoenix/phoenix-ohshit.gif"
+import phoenixOhShit from "./anims/phoenix/phoenix-ohshit-only-once.gif"
 import phoenixHeadshake from "./anims/phoenix/phoenix-headshake.gif"
 import phoenixDeskslam from "./anims/phoenix/phoenix-slam-only-once.gif"
 import phoenixPointing from "./anims/phoenix/phoenix-pointing(a).gif"
@@ -34,7 +34,7 @@ const anims = {
     "thinkingTalking": phoenixThinking2,
     "nod": phoenixNod,
     "headshake": phoenixHeadshake,
-    "ohshit": phoenixOhshit,
+    "ohshit": phoenixOhShit,
     "sweating": phoenixSweat,
     "sweatingTalking": phoenixSweat2,
     "deskslam": phoenixDeskslam,
@@ -74,6 +74,8 @@ const getAnimation = (phoenix) => {
                 return phoenixDeskslam
             case "objection":
                 return phoenixObjection
+            case "ohshit":
+                return phoenixOhShit
             }
     }
     if(phoenix.talking == true){
@@ -128,7 +130,7 @@ function Phoenix(){
     
     const phoenixAnimation = () =>{
         return <img src={getAnimation(phoenixReducer)} style={{position:"relative", top: 10, zIndex:3}}></img>
-    }
+    }   
 
     return(phoenixAnimation(phoenixReducer.animation))
         

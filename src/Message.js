@@ -1,12 +1,16 @@
 import React, { useMemo } from "react"
 import { animated, useTransition } from "react-spring"
+import useSound from 'use-sound';
+import blip from "./sounds/sfx-blipmale.wav"
 
 const Message = ({
-    message = "",
-    trail = 35,
-    setMessageReady,
-    objectionModeOn
+        message = "",
+        trail = 35,
+        setMessageReady,
+        objectionModeOn,
+        volume
     }) => {
+    const [playBlipSound, {stopBlipSound}] = useSound(blip, {volume:volume>0?0.2:0})
     const items = useMemo(
         () => message.trim().split('').map((letter, index) => ({
             item: letter,
@@ -14,14 +18,19 @@ const Message = ({
         })),
         [message]
     );
+    
     if(objectionModeOn == true){
         trail = 25
     }
+
     const transitions = useTransition(items, {
         trail,
         from: { display: "none" },
         enter: { display: "" },
         onRest: (status, controller, item) => {
+            if(item.key%2==0 && item.item != " "){
+                playBlipSound()
+            }
             if (item.key === items.length - 1) {
                 setMessageReady(true)
             }

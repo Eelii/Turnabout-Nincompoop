@@ -54,6 +54,29 @@ const phoenixAnimPointing=()=>{
 const phoenixAnimThinking=()=>{
     return{type:"PHOENIX_ANIM_THINKING"}
 }
+const phoenixAnimOhShit=()=>{
+    return{type:"PHOENIX_ANIM_OHSHIT"}
+}
     
 
-export {doorsOpen, doorsClose, doorsAppear, doorsDisappear, phoenixAnimNormal, phoenixStartTalking, phoenixStopTalking, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimHandsondesk, phoenixAnimReading, phoenixAnimConfident, phoenixAnimPointing, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection, phoenixAutoAnim}
+export {
+    doorsOpen,
+    doorsClose, 
+    doorsAppear, 
+    doorsDisappear, 
+    phoenixAnimNormal, 
+    phoenixStartTalking, 
+    phoenixStopTalking, 
+    phoenixAnimSheepish, 
+    phoenixAnimSweating, 
+    phoenixAnimHandsondesk, 
+    phoenixAnimReading, 
+    phoenixAnimConfident, 
+    phoenixAnimPointing, 
+    phoenixAnimThinking, 
+    phoenixManualAnim, 
+    phoenixAnimDeskslam, 
+    phoenixAnimObjection, 
+    phoenixAutoAnim,
+    phoenixAnimOhShit
+}

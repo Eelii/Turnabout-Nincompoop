@@ -20,14 +20,12 @@ const LeaderboardTop20 = () =>{
             signaturesRef.current[index].loadSaveData(scoreData.signature)
           })
         }
-        console.log('LB');
-        console.log(leaderboardScores);
     },[leaderboardScores])
 
 
     async function fetchLeaderboardScores(){
-        let response = await fetch(`${BACKEND_URL}/topscores`)
-        return response.json()
+      let response = await fetch(`${BACKEND_URL}/topscores`)
+      return response.json()
     }
 
     async function likeQuote(documentID){
@@ -58,9 +56,7 @@ const LeaderboardTop20 = () =>{
 
     const updateScoreLikes = (scoreId) =>{
       const scoresTmp = leaderboardScores
-      console.log('RETURN:');
-      console.log(scoresTmp.map((score)=>{if(score.id == scoreId){return{...score, likes:score.likes+1}}else{return{score}}}));
-      setLeaderboardScores(scoresTmp.map((score)=>{if(score.id == scoreId){return{...score, likes:score.likes+1}}else{return score}}))
+      setLeaderboardScores(scoresTmp.map((score)=>{if(score.id === scoreId){return{...score, likes:score.likes+1}}else{return score}}))
     }
 
     const trophyIcon = (index) =>{
@@ -93,7 +89,7 @@ const LeaderboardTop20 = () =>{
     const rows = leaderboardScores.map((score, index) => (
       <tr key={JSON.stringify(score.signature)}>
         <td style={{fontSize:20}}>{score.position}</td>
-        <td className={index==0?"gradientText":null} style={{fontSize:25}}>{score.score}</td>
+        <td className={index===0?"gradientText":null} style={{fontSize:25}}>{score.score}</td>
         <td style={{textAlign:"left"}}>{trophyIcon(index)} {score.name}</td>
         <td>{score.country}</td>
         <td style={{fontSize:17}}>

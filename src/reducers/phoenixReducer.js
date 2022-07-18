@@ -2,7 +2,7 @@
 // TODO
 const phoenixReducer = (state={animation:"pointing", talking:false, score:1, forceAnimation:false, objection:false}, action)=>{
 
-    if(true ==false){
+    /*if(true ==false){
         switch(action.type){
             case "PHOENIX_MANUAL_ANIM":
                 return {...state, forceAnimation:true}
@@ -29,17 +29,21 @@ const phoenixReducer = (state={animation:"pointing", talking:false, score:1, for
             default:
                 return state
         }
-    }
-    else{
+    }*/
+    //else{
         switch(action.type){
             case "PHOENIX_AUTO_ANIM":
                 return {...state, forceAnimation:false}
+            case "PHOENIX_MANUAL_ANIM":
+                return {...state, forceAnimation:true}
+            case "PHOENIX_START_TALKING":
+                return {...state, talking:true}
+            case "PHOENIX_STOP_TALKING":
+                return {...state, talking:false}
             case "PHOENIX_ANIM_DESKSLAM":
                 return {...state, animation:"deskslam"}
             case "PHOENIX_ANIM_OBJECTION":
                 return {...state, animation:"objection"}
-            case "PHOENIX_MANUAL_ANIM":
-                return {...state, forceAnimation:true}
             case "PHOENIX_ANIM_NORMAL":
                 return {...state, animation:"normal"}
             case "PHOENIX_ANIM_SHEEPISH":
@@ -56,14 +60,12 @@ const phoenixReducer = (state={animation:"pointing", talking:false, score:1, for
                 return {...state, animation:"pointing"}
             case "PHOENIX_ANIM_THINKING":
                 return {...state, animation:"thinking"}
-            case "PHOENIX_START_TALKING":
-                return {...state, talking:true}
-            case "PHOENIX_STOP_TALKING":
-                return {...state, talking:false}
+            case "PHOENIX_ANIM_OHSHIT":
+                return {...state, animation:"ohshit"}
             default:
                 return state
         }
-    }
+    //}
 }
 
 export default phoenixReducer

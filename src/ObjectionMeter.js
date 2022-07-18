@@ -38,7 +38,7 @@ function ObjectionMeter ({objectionPoints, mode}){
                     }}
                 />
                 <div style={{width:130, left:-15, top:-20, height: 50, position:"relative", borderRadius:10, backgroundImage:`url(${marble})`, textAlign:"center"}}>
-                <p className={meterFull?"gradientText":"objectionMeterTextNormal"}>{meterFull?"OBJECTION!":"OBJECTION"}</p>
+                    <p className={meterFull?"gradientText":"objectionMeterTextNormal"}>{meterFull?"OBJECTION!":"OBJECTION"}</p>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@ function ObjectionMeter ({objectionPoints, mode}){
                             </defs>
                         </Wave>
                         <div style={{width:130, left:-15, top:-20, height: 50, position:"relative", borderRadius:10, backgroundImage:`url(${marble})`, textAlign:"center"}}>
-                        <p className="gradientText">OBJECTION</p>
+                            <p className="gradientText">OBJECTION</p>
                         </div>
                 </div>
             </div>
