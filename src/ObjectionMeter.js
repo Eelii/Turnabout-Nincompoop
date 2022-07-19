@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Wave from 'react-wavify'
-import marble from "./imgs/site/marble.jpg"
-import fire from "./imgs/site/fire.gif"
+import marble from "./assets/imgs/site/marble.jpg"
+import fire from "./assets/imgs/site/fire.gif"
 import { useState } from 'react'
 import "./App.css"
 import { render } from '@testing-library/react'

@@ -43,7 +43,7 @@ const LeaderboardTop20 = () =>{
             "score":scoreDocs[i].score,
             "name":scoreDocs[i].name,
             "date":scoreDocs[i].date,
-            "country":scoreDocs[i].country,
+            //"country":scoreDocs[i].country,
             "motto":scoreDocs[i].motto,
             "signature":scoreDocs[i].signature,
             "likes":scoreDocs[i].likes
@@ -91,7 +91,7 @@ const LeaderboardTop20 = () =>{
         <td style={{fontSize:20}}>{score.position}</td>
         <td className={index===0?"gradientText":null} style={{fontSize:25}}>{score.score}</td>
         <td style={{textAlign:"left"}}>{trophyIcon(index)} {score.name}</td>
-        <td>{score.country}</td>
+        {/*<td>{score.country}</td>*/}
         <td style={{fontSize:17}}>
           <i>{score.motto}</i>
           <br/>
@@ -124,7 +124,7 @@ const LeaderboardTop20 = () =>{
                   <th style={{textAlign:"center"}}>Position</th>
                   <th style={{textAlign:"center"}}>Score</th>
                   <th style={{textAlign:"center"}}>Name</th>
-                  <th style={{textAlign:"center"}}>Country</th>
+                  {/*<th style={{textAlign:"center"}}>Country</th>*/}
                   <th style={{textAlign:"center"}}>Motto</th>
                   <th>Signature</th>
                 </tr>

@@ -1,4 +1,4 @@
-import courtImg from "./imgs/site/supreme_court.JPG"
+import courtImg from "./assets/imgs/site/supreme_court.JPG"
 import { Image } from "@mantine/core"
 const CourtBackground = () =>{
     return(

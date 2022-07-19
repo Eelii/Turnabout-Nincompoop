@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import useSound from "use-sound";
-import badum from "./sounds/sfx-badum.wav"
+import badum from "./assets/sounds/sfx-badum.wav"
 
 import './App.css';
 

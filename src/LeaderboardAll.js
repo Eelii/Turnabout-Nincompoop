@@ -14,7 +14,7 @@ const LeaderboardAll = () =>{
         {field:"position", headerName:"", sortable: true, flex: 1},
         {field:"score", headerName:"Score", filter: true, floatingFilter: true, sortable: true, flex: 2},
         {field:"name", headerName:"Name", filter: true, floatingFilter: true, sortable: true, flex: 3},
-        {field:"country", headerName:"Country", filter: true, floatingFilter: true, sortable: true, flex: 2},
+        //{field:"country", headerName:"Country", filter: true, floatingFilter: true, sortable: true, flex: 2},
         {field:"motto", headerName:"Motto", filter: true, floatingFilter: true, sortable: true, flex: 8},
     ]
 
@@ -36,7 +36,7 @@ const LeaderboardAll = () =>{
             "position":i+1,
             "score":scoreDocs[i].score,
             "name":scoreDocs[i].name,
-            "country":scoreDocs[i].country,
+            //"country":scoreDocs[i].country,
             "motto":scoreDocs[i].motto,
             "signature":scoreDocs[i].signature
             //"microsecond":scoreDocs[i].microsecond

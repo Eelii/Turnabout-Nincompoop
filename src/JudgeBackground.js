@@ -1,4 +1,4 @@
-import background from "./imgs/courtroom/judgestand.png"
+import background from "./assets/imgs/courtroom/judgestand.png"
 
 const JudgeBackground = () => {
 

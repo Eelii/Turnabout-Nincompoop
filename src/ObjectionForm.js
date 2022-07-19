@@ -1,11 +1,11 @@
 import './App.css';
 import { useState } from "react"
-import objectionBubble from "./anims/objection.gif"
+import objectionBubble from "./assets/anims/objection.gif"
 
 const ObjectionForm = ({doTheObjection}) => {
 
     const [objectionFormText, setObjectionFormText] = useState("");
-
+    
     return(
         <div style={{position:"absolute", height:"100%", width:"95%", marginRight:"3%", display:"flex", alignItems:"center", justifyContent:"right"}}>
             <div className="objectionForm">

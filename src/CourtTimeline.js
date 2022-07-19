@@ -1,7 +1,7 @@
 import { Text, Avatar, Timeline, ScrollArea } from '@mantine/core';
-import edgeworthProfile from "./imgs/site/edgeworth_profile.png"
-import judgeProfile from "./imgs/site/judge_profile.png"
-import phoenixProfile from "./imgs/site/phoenix_profile.png"
+import edgeworthProfile from "./assets/imgs/site/edgeworth_profile.png"
+import judgeProfile from "./assets/imgs/site/judge_profile.png"
+import phoenixProfile from "./assets/imgs/site/phoenix_profile.png"
 
 const CourtTimeline = ({messages}) =>{
 

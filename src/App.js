@@ -4,8 +4,9 @@ import useSound from 'use-sound';
 import ReactSlider from 'react-slider';
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
-import cornered2 from "./sounds/cornered2.mp3"
-import objectionSoundPhoenix from "./sounds/objection_phoenix.mp3"
+import musicCornered2 from "./assets/sounds/cornered2.mp3"
+import musicTrial from "./assets/sounds/trial-looping.mp3"
+import objectionSoundPhoenix from "./assets/sounds/objection_phoenix.mp3"
 import DefenceView from './DefenceView';
 import ProsecutionView from './ProsecutionView';
 import JudgeView from './JudgeView';
@@ -15,15 +16,15 @@ import Column from './Column';
 import CardRow from './CardRow';
 import TextBox from './TextBox';
 import appStyles from "./App.css"
-import table from "./imgs/site/table.jpg"
+import table from "./assets/imgs/site/table.jpg"
 import handleResponse from './handleResponse';
 import handleKeyPressEvent from './handleKeyPressEvent';
 import handleScore from './handleScore';
-import objectionBubble from "./anims/objection.gif"
-import gavel from "./anims/gavel.gif"
-import gavelSound from "./sounds/sfx-gavel.wav"
+import objectionBubble from "./assets/anims/objection.gif"
+import gavel from "./assets/anims/gavel.gif"
+import gavelSound from "./assets/sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
-import deskSlamSound from "./sounds/sfx-deskslam.wav"
+import deskSlamSound from "./assets/sounds/sfx-deskslam.wav"
 import { defineHidden } from '@react-spring/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './actions';
@@ -39,14 +40,11 @@ import PostCourtView from './PostCourtView';
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider, Button } from '@mantine/core';
-import { BorderSolidIcon, CheckIcon, CrossCircledIcon } from '@modulz/radix-icons';
 import { Check, X , CaretUp, Volume, Volume2, Volume3} from 'tabler-icons-react';
-import CourtEndedOVerlay from './CourtEndedOverlay';
 import { useKey, useSpeech, useAudio } from 'react-use';
 import { VerdictText } from './VerdictText';
 
 import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection, phoenixAnimOhShit} from "./actions"
-import { current } from '@reduxjs/toolkit';
 
 
 function App() {
@@ -65,7 +63,7 @@ function App() {
   const [acceptingCard, setAcceptingCard] = useState(false)
   const [messageReady, setMessageReady] = useState(true)
   const [messages, setMessages]  = useState([TESTRESPONSE])
-  const [objectionPoints, setObjectionPoints] = useState(160)
+  const [objectionPoints, setObjectionPoints] = useState(160) //160 is the max
   const OBJECTION_POINTS_MAX = 150
   const OBJECTION_POINTS_DECAY = 20
   const [objectionModeOn, setObjectionModeOn] = useState(false)
@@ -96,7 +94,6 @@ function App() {
   const [leaderboardVisible, setLeaderboardVisible] = useState(false)
 
 
-
   const [printNameInput, setPrintNameInput] = useState("")
 
   const [leaderboardScores, setLeaderboardScores] = useState([])
@@ -104,9 +101,10 @@ function App() {
   const [test, setTest] = useState([])
 
   const [volume, setVolume] = useState(0)
-  const [playCornered2, { sound }] = useSound(cornered2, {volume});
-  const [playPhoenixObjection, {stopPhoenixObjection}] = useSound(objectionSoundPhoenix, {volume})
-  const [playDeskSlamSound] = useSound(deskSlamSound, {volume})
+  const [playMusicCornered2, {sound:musicCornered2Sound, stop:stopMusicCornered2}] = useSound(musicCornered2, {volume});
+  const [playMusicTrial, {sound:musicTrialSound, stop:stopMusicTrial}] = useSound(musicTrial, {volume:volume, loop:true});
+  const [playPhoenixObjection, {sound:phoenixObjectionSound, stop:stopPhoenixObjectionSound}] = useSound(objectionSoundPhoenix, {volume})
+  const [playDeskSlamSound, {sound: deskSlamHowlerSound}] = useSound(deskSlamSound, {volume:volume})
   const [playGavelSound, { stopGavel }] = useSound(gavelSound, {volume:volume})
 
   const [backendOnline, setBackendOnline] = useState(undefined)
@@ -154,7 +152,6 @@ function App() {
   const addPointPhoenix = () =>{
     setPhoenixScore((phoenixScore)=>phoenixScore+1)
   }
-
   
 
   useKey('ArrowUp', handleKeyPressEvent);
@@ -402,6 +399,12 @@ function App() {
   },[randomQuote])
 
   useEffect(()=>{
+    console.log('MUSICTRIALSOUND:');
+    console.log(musicTrialSound);
+    playMusicTrial()
+  },[courtStarted])
+
+  useEffect(()=>{
     console.log('MESSAGES:');
     console.log(messages);
   },[leaderboardVisible])
@@ -434,6 +437,9 @@ function App() {
         setMessages(messages.filter((message)=>(message.type != "adjourned")))
       }
     }*/
+    if(objectionModeOn===false){
+      setTimeout(()=>{playMusicTrial()},4000)
+    }
     if(messages[currentMessageIndex+1] != undefined){
       setMessages((messages)=>messages.slice(0,currentMessageIndex+1))
     }
@@ -446,13 +452,15 @@ function App() {
     if(objectionPoints < 1){
       setObjectionModeOn(false)
       setMeterMode("normal")
-      sound.fade(volume, 0, 3000);
+      musicCornered2Sound.fade(volume, 0, 3000);
+      setTimeout(()=>{stopMusicCornered2()},3000)
     }
   },[objectionPoints])
 
   useEffect(()=>{
-    console.log(volume);
-  },[volume])
+    console.log('VERDICT');
+    console.log(verdict);
+  },[verdict])
 
   useEffect(()=>{
 
@@ -463,6 +471,8 @@ function App() {
     const currentMessage = messages[currentMessageIndex]
     
     if(currentMessage.type == "verdict"){
+      stopMusicCornered2()
+      stopMusicTrial()
       if(phoenixScore >= edgeworthScore){
         setVerdict("not guilty")
       } else{
@@ -663,6 +673,7 @@ function App() {
   }
   
   function startObjection(){
+    stopMusicTrial()
     setCards([])
     if(fetchingVerdict){
       setFetchingVerdict(false)
@@ -698,7 +709,7 @@ function App() {
     setTimeout(()=>{dispatch(phoenixAnimObjection())}, 1250)
     setTimeout(()=>{setObjectionBubbleVisible(true);playPhoenixObjection()}, 1500)
     setTimeout(()=>{setBlackout(false)}, 1800)
-    setTimeout(()=>{playCornered2()}, 1600)
+    setTimeout(()=>{playMusicCornered2()}, 1600)
     setTimeout(()=>{
       setObjectionBubbleVisible(false)
       setMeterMode("objection")
@@ -794,8 +805,11 @@ function App() {
     if(courtStarted === false){
       return(
         <div>
+          <div className="appNameTextDiv">
+            <div className="appNameText">Turnabout Nincompoop</div>
+          </div>
           <div className="courtNotStartedMessage">
-            <div className="quote-splash" style={{position:"absolute", right: -500, maxWidth:"30vw"}}>
+            <div className="quote-splash" style={{position:"absolute", top: "10%", right: -500, maxWidth:"30vw"}}>
               <p style={{fontSize: 20}}>{randomQuote.quote}</p>
               <p>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
             </div>
@@ -842,10 +856,6 @@ function App() {
     }
   }
 
-  //------------------------------------------------------------
-  // {leaderboardVisible && <CourtTimeline messages={messages}/>}
-  // {leaderboardVisible && <Leaderboard/>}
-
   return (
     <MantineProvider>
       <NotificationsProvider zIndex={99999}>
@@ -865,9 +875,9 @@ function App() {
             setLeaderboardScores={setLeaderboardScores}
             URL={URL}
             messages={messages}
-            verddict={verdict}
-            />
-          
+            verdict={verdict}
+          />
+
           <div className="mainView">
             <div className="phoenixScore"><p>{phoenixScore}</p></div>
             <div className="edgeworthScore"><p>{edgeworthScore}</p></div>
@@ -919,7 +929,6 @@ function App() {
             </TextBox>
           </div>
           <div style={{position:"absolute", top: 300, left: 20, zIndex:1000}}>
-            
             <ReactSlider
               className="volumeSlider"
               thumbClassName="volumeSlider-thumb"
@@ -929,9 +938,9 @@ function App() {
               onChange={(value)=>{setVolume(value/100)}}
               renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}>
             </ReactSlider>
-            {volume<=0?<Volume3></Volume3>:null}
-            {volume>0 && volume<=0.5?<Volume2></Volume2>:null}
-            {volume>0.5?<Volume></Volume>:null}
+            {volume<=0?<Volume3 color="green"/>:null}
+            {volume>0 && volume<=0.5?<Volume2 color="greenyellow"/>:null}
+            {volume>0.5?<Volume color="lime"/>:null}
           </div>
           
           <div style={styles.cardDeck}>

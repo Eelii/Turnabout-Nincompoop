@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sedgwick+Ave&display=swap');
 
 body{
   overflow: hidden;
@@ -338,6 +339,23 @@ to {left:5px;}
   height: 100%;
   opacity: 0.3;
   position:absolute;
+}
+.appNameTextDiv{
+  position: absolute;
+  top: 5%;
+  width: 100vw;
+  display: flex;
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+  z-index: 10001;
+}
+.appNameText{
+  font-size: 80px; 
+  font-family: "Sedgwick Ave";
+  color: rgb(232, 21, 21);
+  text-shadow: 2px 2px black;
+  text-decoration: underline white;
 }
 .courtNotStartedMessage{
   border-style: double;
@@ -679,7 +697,6 @@ to {left:5px;}
   left: 30px;
   top: -20px;
   animation: flash 2s linear infinite
-  
 }
 
 

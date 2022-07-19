@@ -1,15 +1,15 @@
 import './App.css';
 import React, {useState, useEffect} from "react"
 
-import headshake from "./anims/judge/judge-headshake.gif"
-import nodding from "./anims/judge/judge-nodding.gif"
-import normal from "./anims/judge/judge-normal(a).gif"
-import normalTalking from "./anims/judge/judge-normal(b).gif"
-import surprisedTalking from "./anims/judge/judge-surprised(b).gif"
-import surprised from "./anims/judge/judge-surprised.gif"
-import thinking from "./anims/judge/judge-thinking.gif"
-import warning from "./anims/judge/judge-warning(a).gif"
-import warningTalking from "./anims/judge/judge-warning(b).gif"
+import headshake from "./assets/anims/judge/judge-headshake.gif"
+import nodding from "./assets/anims/judge/judge-nodding.gif"
+import normal from "./assets/anims/judge/judge-normal(a).gif"
+import normalTalking from "./assets/anims/judge/judge-normal(b).gif"
+import surprisedTalking from "./assets/anims/judge/judge-surprised(b).gif"
+import surprised from "./assets/anims/judge/judge-surprised.gif"
+import thinking from "./assets/anims/judge/judge-thinking.gif"
+import warning from "./assets/anims/judge/judge-warning(a).gif"
+import warningTalking from "./assets/anims/judge/judge-warning(b).gif"
 
 const anims = {
     "normal": normal,

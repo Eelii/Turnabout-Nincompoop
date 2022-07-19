@@ -12,20 +12,6 @@ const styles = {
         userSelect: "none",
         "boxShadow": "0px 3px 5px rgba(33,33,33,.7)"
     },  
-    cardSmall:{
-        position: "relative",
-        height:150, 
-        width:150, 
-        cursor: "grab",
-        textAlign: "center",
-        userSelect: "none",
-        bottom: 10,
-        fontFamily: "'Shadows Into Light', cursive",
-        fontSize: 20,
-        display: "flex",
-        justifyContent:"center",
-        "boxShadow": "0px 3px 5px rgba(33,33,33,.7)"
-    },
     cardNormalVisible:{
         position: "relative",
         height:150, 
@@ -71,8 +57,6 @@ const Card = ({text, marginNum, colorNum, rotateNum, cards, setCards, setCardDro
           //console.log(`X: ${state.xy[0]} Y: ${state.xy[1]}`)
           //console.log(state)
           if(state.xy[1] < 500 && acceptingCard === true){
-            // TODO: +text
-            //setCardStyle({...cardStyle, visibility:"hidden"})
             if(!objectionCard){
               setCardDroppedText({text:text, objectionCard:false}) 
             } else{
@@ -113,7 +97,6 @@ const getCard = (card, cards, setCards, setCardDroppedText, acceptingCard, setAc
 
 function CardRow({cards, setCards, setCardDroppedText, acceptingCard, setAcceptingCard}){
 
-  
     return(
       <div>
         <div style={{display:"flex", flexDirection:"row", }}>

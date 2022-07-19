@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 import { animated, useTransition } from "react-spring"
 import useSound from 'use-sound';
-import blip from "./sounds/sfx-blipmale.wav"
+import blip from "./assets/sounds/sfx-blipmale.wav"
 
 const Message = ({
         message = "",
@@ -10,7 +10,7 @@ const Message = ({
         objectionModeOn,
         volume
     }) => {
-    const [playBlipSound, {stopBlipSound}] = useSound(blip, {volume:volume>0?0.2:0})
+    const [playBlipSound, {stopBlipSound}] = useSound(blip, {volume:volume>0?0.15:0})
     const items = useMemo(
         () => message.trim().split('').map((letter, index) => ({
             item: letter,

@@ -12,7 +12,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 | [Redux](https://redux.js.org/) & [react-redux](https://react-redux.js.org/) |State management|
 | [AG Grid (React)](https://www.npmjs.com/package/ag-grid-react) |Data grid|
 | [Tabler Icons](https://tablericons.com/) |Icons|
-| [react-spring](https://react-spring.dev/) |Post-it note animations|
+| [react-spring](https://react-spring.dev/) |Post-it® note animations|
 | [react-loading](https://www.npmjs.com/package/react-loading) |Loading animations|
 | [react-use](https://www.npmjs.com/package/react-use) |Keyboard event handling|
 | [use-sound](https://www.npmjs.com/package/use-sound) |Sound effects and music|
