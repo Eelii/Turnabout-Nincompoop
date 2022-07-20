@@ -1,9 +1,9 @@
 import './App.css';
+import "react-awesome-button/dist/styles.css";
 import React, {useState, useEffect, useRef} from "react"
 import useSound from 'use-sound';
 import ReactSlider from 'react-slider';
 import { AwesomeButton } from "react-awesome-button";
-import "react-awesome-button/dist/styles.css";
 import musicCornered2 from "./assets/sounds/cornered2.mp3"
 import musicTrial from "./assets/sounds/trial-looping.mp3"
 import objectionSoundPhoenix from "./assets/sounds/objection_phoenix.mp3"
@@ -12,12 +12,9 @@ import ProsecutionView from './ProsecutionView';
 import JudgeView from './JudgeView';
 import ObjectionMeter from './ObjectionMeter';
 import ObjectionForm from './ObjectionForm';
-import Column from './Column';
 import CardRow from './CardRow';
 import TextBox from './TextBox';
-import appStyles from "./App.css"
 import table from "./assets/imgs/site/table.jpg"
-import handleResponse from './handleResponse';
 import handleKeyPressEvent from './handleKeyPressEvent';
 import handleScore from './handleScore';
 import objectionBubble from "./assets/anims/objection.gif"
@@ -25,23 +22,19 @@ import gavel from "./assets/anims/gavel.gif"
 import gavelSound from "./assets/sounds/sfx-gavel.wav"
 import TimeLeftBar from './TimeLeftBar';
 import deskSlamSound from "./assets/sounds/sfx-deskslam.wav"
-import { defineHidden } from '@react-spring/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { doorsClose, doorsDisappear, doorsOpen, phoenixAutoAnim } from './actions';
 import LeaderboardForm from './LeaderboardForm';
-import { useWheel } from '@use-gesture/react';
 import Doors from './Doors';
 import CourtBackground from './CourtBackground';
-import CourtEndedOverlay from './CourtEndedOverlay';
-import CourtTimeline from "./CourtTimeline"
 import CourtConfetti from './CourtConfetti';
 import PostCourtView from './PostCourtView';
 
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
-import { MantineProvider, Button } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import { Check, X , CaretUp, Volume, Volume2, Volume3} from 'tabler-icons-react';
-import { useKey, useSpeech, useAudio } from 'react-use';
+import { useKey, useAudio } from 'react-use';
 import { VerdictText } from './VerdictText';
 
 import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection, phoenixAnimOhShit} from "./actions"
@@ -57,7 +50,6 @@ function App() {
   const [edgeworthAnimForce, setEdgeworthAnimForce] = useState(false)
   const [judgeAnim, setJudgeAnim] = useState("normal")
   const [judgeAnimForce, setJudgeAnimForce] = useState(false)
-  const [gif, setGif] = useState(0)
   const [cards, setCards] = useState([])
   const CARDS_LIMIT = 5
   const [acceptingCard, setAcceptingCard] = useState(false)
@@ -94,11 +86,8 @@ function App() {
   const [leaderboardVisible, setLeaderboardVisible] = useState(false)
 
 
-  const [printNameInput, setPrintNameInput] = useState("")
-
   const [leaderboardScores, setLeaderboardScores] = useState([])
 
-  const [test, setTest] = useState([])
 
   const [volume, setVolume] = useState(0)
   const [playMusicCornered2, {sound:musicCornered2Sound, stop:stopMusicCornered2}] = useSound(musicCornered2, {volume});
@@ -115,12 +104,6 @@ function App() {
   const [verdictTextVisible, setVerdictTextVisibile] = useState(false)
   const [fetchingVerdict, setFetchingVerdict] = useState(false)
   const [fetchingAdjourned, setFetchingAdjourned] = useState(false)
-  
-
-  const [audioDeskslam, audioDeskslamState, audioDeskslamControls, ref] = useAudio({
-    src: deskSlamSound,
-    autoPlay: false,
-  });
 
   const styles ={
     cardDeck:{
@@ -135,9 +118,7 @@ function App() {
     }
   }
 
-  // ----------------------------------------
-
-
+  // ---------------- KEYBOARD EVENTS ---------------------------
   const normal = () =>{
     dispatch(phoenixManualAnim())
     dispatch(phoenixAnimOhShit())
@@ -158,9 +139,7 @@ function App() {
   useKey("ArrowDown", normal)
   useKey("ArrowRight", addPointEdgeworth)
   useKey("ArrowLeft", addPointPhoenix)
-  
-
-  // -------------------------------------
+  // ------------------------------------------------------------
 
   function getNewCard(text, objectionResponse=false){
     if(objectionResponse==false){
@@ -182,9 +161,6 @@ function App() {
       const response = await fetchCardPrompt()
       const newCard = getNewCard(response.sentence)
       newCard.type = "normal"
-      console.log(`Cards length: ${cards.length}`);
-      console.log(`Cards limit: ${CARDS_LIMIT}`);
-      console.log(`Cards length <= CARDS_LIMIT: ${cards.length <= CARDS_LIMIT}`)
       if(cards.length <= CARDS_LIMIT){
         setCards((cards)=>([...cards, newCard]))
       }
@@ -196,9 +172,6 @@ function App() {
       const response = await fetchObjectionCard()
       const newCard = getNewCard(response.sentence, response)
       newCard.type = "objection"
-      console.log(`Cards length: ${cards.length}`);
-      console.log(`Cards limit: ${CARDS_LIMIT}`);
-      console.log(`Cards length <= CARDS_LIMIT: ${cards.length <= CARDS_LIMIT}`)
       if(cards.length <= CARDS_LIMIT){
         setCards((cards)=>([...cards, newCard]))
       }
@@ -392,22 +365,8 @@ function App() {
   },[backendOnline])
 
   useEffect(()=>{
-    if(randomQuote != null){
-      console.log('QUOTE');
-      console.log(randomQuote);
-    }
-  },[randomQuote])
-
-  useEffect(()=>{
-    console.log('MUSICTRIALSOUND:');
-    console.log(musicTrialSound);
     playMusicTrial()
   },[courtStarted])
-
-  useEffect(()=>{
-    console.log('MESSAGES:');
-    console.log(messages);
-  },[leaderboardVisible])
 
   useEffect(()=>{
     if(showGavel === true){
@@ -429,14 +388,7 @@ function App() {
   },[cards])
 
   useEffect(()=>{
-    // In case a verdict is interrupted with an objection.
-    console.log(`OBJECTION MODE ON: ${objectionModeOn}`)
-    // Remove?
-    /*if(messages[currentMessageIndex].type == "verdict"){
-      if(messages[currentMessageIndex+1]?.type == "adjourned"){
-        setMessages(messages.filter((message)=>(message.type != "adjourned")))
-      }
-    }*/
+
     if(objectionModeOn===false){
       setTimeout(()=>{playMusicTrial()},4000)
     }
@@ -456,11 +408,6 @@ function App() {
       setTimeout(()=>{stopMusicCornered2()},3000)
     }
   },[objectionPoints])
-
-  useEffect(()=>{
-    console.log('VERDICT');
-    console.log(verdict);
-  },[verdict])
 
   useEffect(()=>{
 
@@ -720,8 +667,6 @@ function App() {
   function slamDesk(){
     dispatch(phoenixManualAnim())
     dispatch(phoenixAnimDeskslam())
-    console.log('VOLUME');
-    console.log(volume)
     playDeskSlamSound()
     setTimeout(()=>{
       dispatch(phoenixAutoAnim())
@@ -864,7 +809,6 @@ function App() {
           {renderPreCourtView()}
           {confettiVisible && <CourtConfetti verdict={verdict}/>}
           <Doors doors={doors}></Doors>
-          {audioDeskslam}
           {leaderboardVisible && <PostCourtView messages={messages} phoenixScore={phoenixScore}/>}
           <LeaderboardForm 
             showLeaderboardForm={leaderboardFormVisible} 

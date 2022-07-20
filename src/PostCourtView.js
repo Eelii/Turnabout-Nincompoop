@@ -14,9 +14,6 @@ const PostCourtView = ({messages, phoenixScore}) =>{
     const onChange = (activeIndex, tabKey) => {
         setActiveTab({index:activeIndex, key:tabKey})
     }
-    useEffect(()=>{
-        console.log(drawerOpened);
-    },[drawerOpened])
 
     return(
 

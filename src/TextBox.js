@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import Message from "./Message.js"
 import emojisToPhoenixAnimation from "./emojisToPhoenixAnimation.js"
 import emojisToEdgeworthAnimation from "./emojisToEdgeworthAnimation.js"

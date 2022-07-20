@@ -2,7 +2,6 @@ import CanvasDraw from "react-canvas-draw";
 import { AwesomeButton } from "react-awesome-button";
 import React, { useState, useRef, useEffect } from "react"
 import {Select, Image, Popover, Button, Text} from "@mantine/core"
-import fax from "./assets/imgs/site/fax.png"
 import phoenixProfile from "./assets/imgs/site/phoenix_profile.png"
 import judgeProfile from "./assets/imgs/site/judge_profile.png"
 import { loremIpsum } from 'react-lorem-ipsum';

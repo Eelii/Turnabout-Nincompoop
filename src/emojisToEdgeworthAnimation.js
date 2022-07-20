@@ -1,8 +1,5 @@
 function emojisToEdgeworthAnimation(emoji1, messageReadyState){
 
-    console.log("FUNCTION!!")
-    console.log(emoji1)
-
     if(messageReadyState==false){
 
         if(emoji1=="😕"){

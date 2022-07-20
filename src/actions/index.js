@@ -58,7 +58,6 @@ const phoenixAnimOhShit=()=>{
     return{type:"PHOENIX_ANIM_OHSHIT"}
 }
     
-
 export {
     doorsOpen,
     doorsClose, 

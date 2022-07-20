@@ -1,7 +1,6 @@
-import { useSpring, animated, to } from 'react-spring'
-import { useDrag, useGesture } from '@use-gesture/react'
-import React, { useRef, useEffect, useState } from 'react'
-import appStyles from "./App.css"
+import { useSpring, animated } from 'react-spring'
+import { useGesture } from '@use-gesture/react'
+import React, { useState } from 'react'
 
 
 const styles = {
