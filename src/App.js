@@ -801,18 +801,18 @@ function App() {
     }
   }
 
-  const renderCourtNotStarted = () => {
+  const renderPreCourtView = () => {
     if(courtStarted === false){
       return(
         <div>
           <div className="appNameTextDiv">
             <div className="appNameText">Turnabout Nincompoop</div>
           </div>
+          <div className="quote-splash">
+              <p style={{fontSize: 20, textShadow: "1px 1px white"}}>{randomQuote.quote}</p>
+              <p style={{fontSize: 20, textShadow: "1px 1px white"}}>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
+          </div>
           <div className="courtNotStartedMessage">
-            <div className="quote-splash" style={{position:"absolute", top: "10%", right: -500, maxWidth:"30vw"}}>
-              <p style={{fontSize: 20}}>{randomQuote.quote}</p>
-              <p>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
-            </div>
               <AwesomeButton 
                 style={{position: "absolute", top: "80%", left: "50%", transform: "translate(-50%, -50%)"}}
                 size="large"
@@ -826,7 +826,6 @@ function App() {
                       setTimeout(()=>{setShowGavel(true)},1000)
                       setTimeout(()=>{dispatch(doorsDisappear())},3500)
                     }, 400)
-                    
                   }
                 }
                 >
@@ -862,11 +861,11 @@ function App() {
         <div className="App">
           <CourtBackground/>
           {verdictTextVisible && <VerdictText verdict={verdict} setVerdictTextVisibile={setVerdictTextVisibile} volume={volume}></VerdictText>}
-          {renderCourtNotStarted()}
+          {renderPreCourtView()}
           {confettiVisible && <CourtConfetti verdict={verdict}/>}
           <Doors doors={doors}></Doors>
           {audioDeskslam}
-          {leaderboardVisible && <PostCourtView messages={messages}/>}
+          {leaderboardVisible && <PostCourtView messages={messages} phoenixScore={phoenixScore}/>}
           <LeaderboardForm 
             showLeaderboardForm={leaderboardFormVisible} 
             setShowLeaderBoardForm={setLeaderboardFormVisible} 

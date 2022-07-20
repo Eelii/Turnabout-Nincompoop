@@ -48,7 +48,7 @@ const LeaderboardAll = () =>{
 
     return(
         <Center style={{width:"100%", height:"100%", position:"absolute"}}>
-            <div className="ag-theme-material" style={{height: '1000px', width: '70%', margin: 'auto'}} >
+            <div className="ag-theme-material" style={{height: '80vh', width: '70%', margin: 'auto'}} >
                 <AgGridReact 
                     ref={gridRef}
                     onGridReady={params => gridRef.current = params.api}

@@ -259,6 +259,14 @@ to {left:5px;}
   height: 100%;
   width: 100%;
 }
+.likesDiv{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-content: left;
+  left: 0px;
+  z-index: 1000000;
+}
 .leaderboardDiv{
   background-color: whitesmoke;
   overflow-y: scroll;
@@ -783,7 +791,11 @@ to {left:5px;}
 }
 
 .quote-splash {
+  position:absolute;
   animation: 2s anim-popoutin ease-in-out infinite;
+  z-index: 10002;
+  right: 10%;
+  top: 25%;
 }
 @keyframes anim-popoutin {
   0% {

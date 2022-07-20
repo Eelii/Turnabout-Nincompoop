@@ -19,7 +19,7 @@ const VerdictText = (props) =>{
     const verdict = props.verdict
     const volume = props.volume
     const setVerdictTextVisibile = props.setVerdictTextVisibile
-    const [playBadum, { sound }] = useSound(badum, {volume:volume});
+    const [playBadum, { sound:badumSound }] = useSound(badum, {volume:volume});
     
     useEffect(()=>{
         if(verdict != null){
@@ -38,7 +38,8 @@ const VerdictText = (props) =>{
             setTimeout(()=>{
                 for(let i = 0; i < guiltyLettersRefs.length; i++){
                     animThump(guiltyLettersRefs[i], letterThumpTimeout*(i+1))
-                    setTimeout(()=>{playBadum();console.log('BADUM');},1000)
+                    setTimeout(()=>{playBadum();console.log('BADUM');console.log('VOLUME:');
+                    console.log(volume);},1000)
                 }
                 const slideAndThumpDuration = slideDuration*1000+letterThumpTimeout*guiltyLettersRefs.length
                 setTimeout(()=>{animSlide(verdictLettersDivRef, "out", slideDuration)},slideAndThumpDuration)
@@ -50,7 +51,8 @@ const VerdictText = (props) =>{
             setTimeout(()=>{
             for(let i = 0; i < notGuiltyWordsRefs.length; i++){
                 animThump(notGuiltyWordsRefs[i], wordThumpTimeout*(i+1), 2)
-                setTimeout(()=>{playBadum();console.log('BADUM');},1000)
+                setTimeout(()=>{playBadum();console.log('BADUM');console.log('VOLUME:');
+                console.log(volume);},1000)
             }
             const slideAndThumpDuration = slideDuration*1000+wordThumpTimeout*notGuiltyWordsRefs.length
             setTimeout(()=>{animSlide(verdictWordsDivRef, "out", slideDuration)},slideAndThumpDuration)

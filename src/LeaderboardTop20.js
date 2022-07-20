@@ -4,12 +4,22 @@ import { Table, Center, Button, Text } from "@mantine/core"
 import { Trophy, ThumbUp } from 'tabler-icons-react';
 import "./App.css"
 
-const LeaderboardTop20 = () =>{
+const LeaderboardTop20 = ({phoenixScore, availableLikes, setAvailableLikes}) =>{
 
     const BACKEND_URL = "http://localhost:5000"
     const signaturesRef = useRef([])
     const [leaderboardScores, setLeaderboardScores] = useState([])
 
+    const styles = {
+      likesAvailable:{
+        fontSize:18, 
+        color:"lime"
+      },
+      likesNotAvailable:{
+        fontSize: 18,
+        color:"gray"
+      }
+    }
     useEffect(()=>{
         getLeaderboardScores()
     },[])
@@ -22,7 +32,6 @@ const LeaderboardTop20 = () =>{
         }
     },[leaderboardScores])
 
-
     async function fetchLeaderboardScores(){
       let response = await fetch(`${BACKEND_URL}/topscores`)
       return response.json()
@@ -31,6 +40,7 @@ const LeaderboardTop20 = () =>{
     async function likeQuote(documentID){
       let response = await fetch(`${BACKEND_URL}/like?id=${documentID}`)
       let json = await response.json()
+      return json
     }
 
     async function getLeaderboardScores(){
@@ -72,6 +82,22 @@ const LeaderboardTop20 = () =>{
       }
     }
 
+    const likesAvalable = () =>{
+      if(availableLikes > 0){
+        return(
+          <Text style={styles.likesAvailable}>
+            Available likes: {availableLikes}
+          </Text>
+        )
+      }else{
+        return(
+          <Text style={styles.likesNotAvailable}>
+            Available likes: {availableLikes}
+          </Text>
+        )
+      }
+    }
+
     const userSignature = (index) => {
         return(
           <CanvasDraw
@@ -102,7 +128,13 @@ const LeaderboardTop20 = () =>{
               gradient={{ from: 'indigo', to: 'cyan' }}
               size="s"
               style={{height:"50%"}}
-              onClick={()=>{likeQuote(leaderboardScores[index].id);updateScoreLikes(score.id)}}
+              onClick={()=>{
+                if(availableLikes > 0){
+                likeQuote(leaderboardScores[index].id)
+                updateScoreLikes(score.id)
+                setAvailableLikes((availableLikes)=>availableLikes-1)
+                }
+              }}
             >Like
             </Button>
             <Text style={{height:"50%", marginLeft: 20, color:"lime"}}>+{score.likes}</Text>
@@ -116,6 +148,10 @@ const LeaderboardTop20 = () =>{
 
     return(
       <Center style={{width:"100%", height:"100%", position:"absolute"}}>
+        <div className="likesDiv">
+          <Text style={{fontSize:18, color:"blue"}}>Your points: {phoenixScore}</Text>
+          {likesAvalable()}
+        </div>
         <div className="leaderboardDiv">
           <div className="leaderboardList">
             <Table fontSize={"xl"}>

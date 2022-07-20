@@ -6,10 +6,11 @@ import CourtEndedOverlay from "./CourtEndedOverlay";
 import { Tabs, Button, Center, Drawer } from '@mantine/core';
 import { ArrowsRight, ArrowsLeft } from 'tabler-icons-react';
 
-const PostCourtView = ({messages}) =>{
+const PostCourtView = ({messages, phoenixScore}) =>{
 
     const [activeTab, setActiveTab] = useState({index:0,key:"TOP"})
     const [drawerOpened, setDrawerOpened] = useState(false);
+    const [availableLikes, setAvailableLikes] = useState(Math.ceil(phoenixScore/5))
     const onChange = (activeIndex, tabKey) => {
         setActiveTab({index:activeIndex, key:tabKey})
     }
@@ -22,7 +23,7 @@ const PostCourtView = ({messages}) =>{
         <div style={{zIndex:10000, position:"absolute", width:"100vw", height:"100vh"}}>
             <CourtEndedOverlay/>
             <Tabs initialTab={activeTab.index} active={activeTab} onTabChange={onChange} color="blue" style={{width:"100%"}}>
-                <Tabs.Tab label="TOP 20" tabKey="TOP" style={{width:"50%", fontSize:30, backgroundColor:activeTab.key=="TOP"?"gray":"cyan", color:activeTab.key=="TOP"?"cyan":"gray", zIndex: 10001}}><LeaderboardTop20/></Tabs.Tab>
+                <Tabs.Tab label="TOP 20" tabKey="TOP" style={{width:"50%", fontSize:30, backgroundColor:activeTab.key=="TOP"?"gray":"cyan", color:activeTab.key=="TOP"?"cyan":"gray", zIndex: 10001}}><LeaderboardTop20 phoenixScore={phoenixScore} availableLikes={availableLikes} setAvailableLikes={setAvailableLikes}/></Tabs.Tab>
                 <Tabs.Tab label="All scores" tabKey="ALL" style={{width:"50%", fontSize:30, backgroundColor:activeTab.key=="ALL"?"gray":"cyan", color:activeTab.key=="ALL"?"cyan":"gray", zIndex: 10001}}><LeaderboardAll/></Tabs.Tab>
             </Tabs>
             

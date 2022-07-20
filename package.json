@@ -2,6 +2,7 @@
   "name": "phoenix",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@mantine/core": "^4.2.5",
     "@mantine/notifications": "^4.2.5",

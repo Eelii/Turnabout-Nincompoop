@@ -16,11 +16,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 | [react-loading](https://www.npmjs.com/package/react-loading) |Loading animations|
 | [react-use](https://www.npmjs.com/package/react-use) |Keyboard event handling|
 | [use-sound](https://www.npmjs.com/package/use-sound) |Sound effects and music|
+| [react-canvas-draw](https://www.npmjs.com/package/react-canvas-draw) |Signing important documents|
 | [react-confetti](https://www.npmjs.com/package/react-confetti) |Confetti|
 | [react-wavify](https://www.npmjs.com/package/react-wavify) |Waves|
 | [react-lorem-ipsum](https://www.npmjs.com/package/react-lorem-ipsum) |Generic text generation|
 | [react-slider](https://www.npmjs.com/package/react-slider) |Volume slider|
 | [react-awesome-button](https://www.npmjs.com/package/react-awesome-button) |Button components|
+
 
 
 
