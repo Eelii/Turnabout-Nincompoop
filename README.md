@@ -26,9 +26,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Screenshots 
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court1.PNG" alt="screenshot1" width="600"/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot1" width="600"/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot1" width="200"/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.PNG" alt="screenshot1" width="200"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="600"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot3" width="400"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.PNG" alt="screenshot4" width="400"/>
 
 
 ### `npm start`
