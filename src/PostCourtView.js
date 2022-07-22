@@ -10,7 +10,7 @@ const PostCourtView = ({messages, phoenixScore}) =>{
 
     const [activeTab, setActiveTab] = useState({index:0,key:"TOP"})
     const [drawerOpened, setDrawerOpened] = useState(false);
-    const [availableLikes, setAvailableLikes] = useState(Math.ceil(phoenixScore/5))
+    const [availableLikes, setAvailableLikes] = useState(Math.ceil(phoenixScore/8))
     const onChange = (activeIndex, tabKey) => {
         setActiveTab({index:activeIndex, key:tabKey})
     }

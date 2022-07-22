@@ -22,6 +22,7 @@ function handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoe
         "😳": 2
     }
     const multiplier = 100
+    const objectionPointBonus = 3
     const message_emoji_1 = message["emoji_1"].emoji
     const prob = message["emoji_1"].prob 
 
@@ -29,18 +30,15 @@ function handleScore(OBJECTION_POINTS_MAX, phoenixScore, edgeworthScore, setPhoe
         if(message.character == "phoenix"){
             setPhoenixScore((phoenixScore) => {return phoenixScore + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
             if(!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
-                setObjectionPoints((objectionPoints) => {return objectionPoints + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
+                setObjectionPoints((objectionPoints) => {return objectionPoints + Math.floor(multiplier*prob+objectionPointBonus+emoji_score[message["emoji_1"].emoji])})
             }
         } else{
-            setEdgeworthScore((edgeworthScore) => { return edgeworthScore + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
+            setEdgeworthScore((edgeworthScore) => {return edgeworthScore + Math.floor(multiplier*prob+emoji_score[message["emoji_1"].emoji])})
         }
     }
     else if (Object.keys(emoji_opposition_score).includes(message_emoji_1)){
         if(message.character == "phoenix"){
             setEdgeworthScore((edgeworthScore) => {return edgeworthScore + Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
-            if (!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){
-                setObjectionPoints((objectionPoints) => {return objectionPoints - Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
-            }
         } else{
             setPhoenixScore((phoenixScore) => {return phoenixScore + Math.floor(multiplier*prob+emoji_opposition_score[message["emoji_1"].emoji])})
             if (!objectionModeOn && objectionPoints < OBJECTION_POINTS_MAX){

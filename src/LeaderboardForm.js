@@ -58,6 +58,11 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
     },[judgeWarnings])
 
     async function submitLeaderboardForm(){
+        console.log('submitting leaderboard form');
+        console.log('selectedMotto: ', selectedMotto);
+        console.log("printNameInput: ", printNameInput);
+        console.log('phoenixScore: ', phoenixScore);
+
         setShowLeaderBoardForm(false)
         const score = phoenixScore
         const scorePosted = await postFormToDB()
@@ -115,7 +120,7 @@ const LeaderboardForm = ({showLeaderboardForm, setShowLeaderBoardForm, setLeader
                   placeholder="Nulla poena sine lege" 
                   nothingFound="No dialogue found..." 
                   onDropdownOpen={()=>setPopoverMottoOpened(false)}
-                  data={messages.filter((message,index)=>message.character=="phoenix" && index>0 && message.is_prompt != true).map((filteredMessage)=>({value:filteredMessage.sentence, label:filteredMessage.sentence, image:phoenixProfile}))}
+                  data={messages.filter((message,index)=>message.character=="phoenix" && index>0 && message.prompted != true).map((filteredMessage)=>({value:filteredMessage.sentence, label:filteredMessage.sentence, image:phoenixProfile}))}
                   onChange={(value)=>{setSelectedMotto(value)}}
                   zIndex={10000}
                 />

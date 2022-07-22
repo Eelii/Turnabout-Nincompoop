@@ -1,6 +1,7 @@
 import { useSpring, animated } from 'react-spring'
 import { useGesture } from '@use-gesture/react'
 import React, { useState } from 'react'
+import ReactLoading from 'react-loading';
 
 
 const styles = {

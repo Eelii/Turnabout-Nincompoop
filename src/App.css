@@ -368,7 +368,10 @@ to {left:5px;}
 .courtNotStartedMessage{
   border-style: double;
   border-color: #8d6d21;
-  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40%;
   width: 25%;
   top: 50%;
   left: 50%;
@@ -378,9 +381,6 @@ to {left:5px;}
   z-index: 10001;
 }
 .startCourtButton{
-  position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
 }
 .timeLeftBarDiv{

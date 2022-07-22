@@ -1,8 +1,9 @@
 import './App.css';
 import "react-awesome-button/dist/styles.css";
-import React, {useState, useEffect, useRef} from "react"
+import React, { useState, useEffect } from "react"
 import useSound from 'use-sound';
 import ReactSlider from 'react-slider';
+import ReactLoading from "react-loading";
 import { AwesomeButton } from "react-awesome-button";
 import musicCornered2 from "./assets/sounds/cornered2.mp3"
 import musicTrial from "./assets/sounds/trial-looping.mp3"
@@ -33,8 +34,8 @@ import PostCourtView from './PostCourtView';
 
 import { NotificationsProvider, showNotification, updateNotification } from '@mantine/notifications';
 import { MantineProvider } from '@mantine/core';
-import { Check, X , CaretUp, Volume, Volume2, Volume3} from 'tabler-icons-react';
-import { useKey, useAudio } from 'react-use';
+import { Check, X , CaretUp, Volume, Volume2, Volume3, Prompt} from 'tabler-icons-react';
+import { useKey } from 'react-use';
 import { VerdictText } from './VerdictText';
 
 import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixAnimHandsondesk, phoenixAnimNormal, phoenixAnimPointing, phoenixAnimReading, phoenixAnimSheepish, phoenixAnimSweating, phoenixAnimThinking, phoenixManualAnim, phoenixAnimDeskslam, phoenixAnimObjection, phoenixAnimOhShit} from "./actions"
@@ -43,7 +44,7 @@ import { phoenixStartTalking, phoenixStopTalking, phoenixAnimConfident, phoenixA
 function App() {
   const doors = useSelector(state=>state.doors)
   const URL = "http://localhost:5000"
-  const TESTRESPONSE = {sentence:"start", character:"phoenix", emoji_1:{emoji:"😊"}, emoji_2:{emoji:"😊"}, emoji_3:{emoji:"😊"}, for_judge: false, is_question: false, is_thought: false, shouting: false}
+  const TESTRESPONSE = {sentence:"(Can't go wrong with these notes!)", character:"phoenix", emoji_1:{emoji:"😊"}, emoji_2:{emoji:"😊"}, emoji_3:{emoji:"😊"}, for_judge: false, is_question: false, is_thought: false, shouting: false}
   const [phoenixAnim, setPhoenixAnim] = useState("normal")
   const [phoenixAnimForce, setPhoenixAnimForce] = useState(false)
   const [edgeworthAnim, setEdgeworthAnim] = useState("normal")
@@ -55,7 +56,7 @@ function App() {
   const [acceptingCard, setAcceptingCard] = useState(false)
   const [messageReady, setMessageReady] = useState(true)
   const [messages, setMessages]  = useState([TESTRESPONSE])
-  const [objectionPoints, setObjectionPoints] = useState(160) //160 is the max
+  const [objectionPoints, setObjectionPoints] = useState(160)
   const OBJECTION_POINTS_MAX = 150
   const OBJECTION_POINTS_DECAY = 20
   const [objectionModeOn, setObjectionModeOn] = useState(false)
@@ -118,7 +119,7 @@ function App() {
     }
   }
 
-  // ---------------- KEYBOARD EVENTS ---------------------------
+  // -------------------- KEYBOARD EVENTS ---------------------------
   const normal = () =>{
     dispatch(phoenixManualAnim())
     dispatch(phoenixAnimOhShit())
@@ -139,9 +140,10 @@ function App() {
   useKey("ArrowDown", normal)
   useKey("ArrowRight", addPointEdgeworth)
   useKey("ArrowLeft", addPointPhoenix)
+
   // ------------------------------------------------------------
 
-  function getNewCard(text, objectionResponse=false){
+  function createNewCard(text, objectionResponse=false){
     if(objectionResponse==false){
       const randomColorNum = Math.floor(Math.random() * 5)
       const randomMarginNum = Math.floor(Math.random() * 40) + 5;
@@ -159,7 +161,7 @@ function App() {
   async function addNormalCardsToDeck(cardsAmount){
     for(let i=0; i<cardsAmount; i++){
       const response = await fetchCardPrompt()
-      const newCard = getNewCard(response.sentence)
+      const newCard = createNewCard(response.sentence)
       newCard.type = "normal"
       if(cards.length <= CARDS_LIMIT){
         setCards((cards)=>([...cards, newCard]))
@@ -170,9 +172,11 @@ function App() {
   async function addObjectionCardsToDeck(cardsAmount){
     for(let i=0; i<cardsAmount; i++){
       const response = await fetchObjectionCard()
-      const newCard = getNewCard(response.sentence, response)
+      const newCard = createNewCard(response.sentence, response)
       newCard.type = "objection"
+      console.log('Current cards length: ', cards.length);
       if(cards.length <= CARDS_LIMIT){
+        console.log('Adding objection card...');
         setCards((cards)=>([...cards, newCard]))
       }
     }
@@ -354,7 +358,6 @@ function App() {
 
   useEffect(()=>{
     //window.addEventListener("keydown", handleKeyPress)
-    //addNewCardsToDeck(5)
     //getIPdata()
     checkBackend()
     return()=>{console.log("clean up!")}
@@ -386,6 +389,7 @@ function App() {
       addObjectionCardsToDeck(1)
     }
   },[cards])
+
 
   useEffect(()=>{
 
@@ -531,14 +535,15 @@ function App() {
       setMessages((messages)=>([...messages, objectionResponse]))
     } else{
       setFetchingMessage(true)
-      if (prompt == undefined){
+      if (prompt){
         for(let i = 0; i < numOfMessages; i++){
-          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
+          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn, prompt=prompt)
+          tmpMsg.prompted = true
           setMessages((messages)=>([...messages, tmpMsg]))
         }
       } else{
         for(let i = 0; i < numOfMessages; i++){
-          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn, prompt=prompt)
+          let tmpMsg = await fetchSentenceSpeaking(character, objectionModeOn)
           setMessages((messages)=>([...messages, tmpMsg]))
         }
       }
@@ -747,19 +752,22 @@ function App() {
   }
 
   const renderPreCourtView = () => {
+
     if(courtStarted === false){
       return(
         <div>
           <div className="appNameTextDiv">
             <div className="appNameText">Turnabout Nincompoop</div>
           </div>
-          <div className="quote-splash">
-              <p style={{fontSize: 20, textShadow: "1px 1px white"}}>{randomQuote.quote}</p>
-              <p style={{fontSize: 20, textShadow: "1px 1px white"}}>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
-          </div>
+          { randomQuote.quote !== "" &&
+            <div className="quote-splash">
+                <p style={{fontSize: 20, textShadow: "1px 1px white"}}>{randomQuote.quote}</p>
+                <p style={{fontSize: 20, textShadow: "1px 1px white"}}>― {randomQuote.name} {`(est. ${randomQuote.date})`}</p>
+            </div>
+          }
           <div className="courtNotStartedMessage">
               <AwesomeButton 
-                style={{position: "absolute", top: "80%", left: "50%", transform: "translate(-50%, -50%)"}}
+                className="startCourtButton"
                 size="large"
                 type="primary"
                 disabled={backendOnline==true?false:true}
