@@ -23,7 +23,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 | [react-slider](https://www.npmjs.com/package/react-slider) |Volume slider|
 | [react-awesome-button](https://www.npmjs.com/package/react-awesome-button) |Button components|
 
+## Screenshots 
 
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court1.PNG" alt="screenshot1" width="200"/>
 
 
 ### `npm start`
