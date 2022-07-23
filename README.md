@@ -4,7 +4,7 @@ Turnabout Nincompoop is an attorney simulator in which you, hereinafter referred
 
 During court, if the user has boosted their avatar's confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any single wrong they deem an injustice. This will enable the user to act more smug and stop the flow of time.
 
-After complex legal analysis a verdict will be passed. The user's client will be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
+After complex legal analysis a verdict will be passed. The user's client will then be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
 
 Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney™ and get an access to an exclusive database front-end view listing previous users' amazing accomplishments.
 <br/>
