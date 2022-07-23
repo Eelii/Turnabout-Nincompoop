@@ -12,7 +12,11 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to virt
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="1000"/>
 
-## Used libraries
+## Behind the scenes
+
+Turnabout Nincompoop consists of both a backend and a frontend. The frontend is built on React and mulitple React libraries and frameworks:
+
+### Frontend technologies
 
 | Library | Use |
 |:-------------|:-------------|
