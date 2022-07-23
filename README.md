@@ -8,7 +8,7 @@ After complex legal analysis a verdict will be passed. The user's client will be
 
 Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney and get an access to an exclusive database front-end listing previous users' amazing accomplishments.
 
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="600"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="1000"/>
 
 ## Used libraries
 
