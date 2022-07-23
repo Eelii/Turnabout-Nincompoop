@@ -14,8 +14,6 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to virt
 
 ## Used libraries
 
-## Used libraries
-
 | Library | Use |
 |:-------------|:-------------|
 | [Mantine](https://reactnative.dev/) |UI components|
