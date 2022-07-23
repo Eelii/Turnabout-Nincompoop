@@ -1,6 +1,14 @@
 # Turnabout Nincompoop
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Turnabout Nincompoop is an attorney simulator in which the user will use their carefully prepared notes to make coherent arguments and advocate for their clients' innocence. 
+
+During court, if the user has boosted their avatars confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any wrong they deem an injustice. This will enable the user to act more smug and will also stop the flow of time.
+
+After complex legal analysis a verdict will be passed. The user's client will be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
+
+Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney and get an access to an exclusive database front-end listing previous users' amazing accomplishments.
+
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="600"/>
 
 ## Used libraries
 
@@ -26,7 +34,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Screenshots 
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court1.PNG" alt="screenshot1" width="600"/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="600"/>
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot3" width="400"/>
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.png" alt="screenshot4" width="400"/>
 
