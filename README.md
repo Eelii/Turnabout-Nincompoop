@@ -2,11 +2,11 @@
 
 Turnabout Nincompoop is an attorney simulator in which you, hereinafter referred to as "the user", will use their carefully prepared notes to make coherent arguments and advocate for their clients' innocence. 
 
-During court, if the user has boosted their avatar's confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any single wrong they deem an injustice. This will enable the user to act more smug and stop the flow of time.
+During court, if the user has boosted their avatar's confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any single wrong they deem an injustice. This will enable the user's avatar to act more smug and stop the flow of time.
 
 After complex legal analysis a verdict will be passed. The user's client will then be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
 
-Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney™ and get an access to an exclusive database front-end view listing previous users' amazing accomplishments.
+Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a legal document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney™ and get an access to an exclusive database front-end view listing previous users' amazing accomplishments.
 <br/>
 <br/>
 
@@ -14,9 +14,7 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to virt
 
 ## Behind the scenes
 
-Turnabout Nincompoop consists of both a backend and a frontend. The frontend is built on React and mulitple React libraries and frameworks:
-
-### Frontend technologies
+Turnabout Nincompoop includes a backend and a frontend. The frontend is built on React with mulitple React libraries and frameworks:
 
 | Library | Use |
 |:-------------|:-------------|
@@ -34,6 +32,8 @@ Turnabout Nincompoop consists of both a backend and a frontend. The frontend is 
 | [react-lorem-ipsum](https://www.npmjs.com/package/react-lorem-ipsum) |Generic text generation|
 | [react-slider](https://www.npmjs.com/package/react-slider) |Volume slider|
 | [react-awesome-button](https://www.npmjs.com/package/react-awesome-button) |Button components|
+
+The backend is used for storing and retrieving data from a NoSQL database (Apache CouchDB) and, more importantly, for generating all of the character dialogue. Dialogue generation is done by three different neural network language models that have been trained on character specific dialogue from all of the Ace Attorney games. Dialogue data was scraped using Beautiful Soup.
 
 ## Screenshots 
 
