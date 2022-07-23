@@ -2,7 +2,7 @@
 
 Turnabout Nincompoop is an attorney simulator in which you, hereinafter referred to as "the user", will use their carefully prepared notes to make coherent arguments and advocate for their clients' innocence. 
 
-During court, if the user has boosted their avatars confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any single wrong they deem an injustice. This will enable the user to act more smug and stop the flow of time.
+During court, if the user has boosted their avatar's confidence to the maximum by verbally abusing the prosecution, the user can OBJECT to any single wrong they deem an injustice. This will enable the user to act more smug and stop the flow of time.
 
 After complex legal analysis a verdict will be passed. The user's client will be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
 
