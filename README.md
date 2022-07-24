@@ -51,8 +51,7 @@ Text generation in Turnabout Nincompoop is, at least currently, non-responsive i
 
 <br/>
 <br/>
-Dialogue data the language models were trained on was scraped to a CSV file using Beautiful Soup and a custom Python script, so in theory it would be possible create models that would be able to respond to text instead of just continuing it.
-
+Dialogue data the language models were trained on was scraped to a CSV file using Beautiful Soup and a custom Python script, so in theory it would be possible create models that would be able to respond to text in some other way than by just continuing it. 
 
 <!--
 
