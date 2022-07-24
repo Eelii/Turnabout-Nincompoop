@@ -6,7 +6,7 @@ During court, if the user has boosted their avatar's confidence to the maximum b
 
 After complex legal analysis a verdict will be passed. The user's client will then be sentenced guilty or not guilty based on including, but not limited to how many times Orla the Orca isn't mentioned. 
 
-Having got a guilty or non guilty verdict, the user is highly encouraged to virtually sign a legal document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney™ and get an access to an exclusive database front-end view listing previous users' amazing accomplishments.
+Having got a guilty or non guilty verdict, the user is highly encouraged to properly sign a legal document consisting of multiple sections of Lorem Ipsum. By submitting their document, the user will become a certified Nice Attorney™ and get an access to an exclusive database front-end view listing previous users' amazing accomplishments.
 <br/>
 <br/>
 
