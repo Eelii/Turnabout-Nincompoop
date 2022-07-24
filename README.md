@@ -42,13 +42,13 @@ The backend is used for storing and retrieving data from a NoSQL database (Apach
 
 Text generation in Turnabout Nincompoop is, at least currently, non-responsive in that the language models only generate random text or continue a given prompt, but the generated text doesn't answer or respond to any previous text. At times the language models can still generate somewhat convincing yet nonsensical <sub>(or nincompoopish)</sub> conversations:
 <br/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline3.PNG" alt="timeline screenshot 1" width="400"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline3.png" alt="timeline screenshot 1" width="400"/>
 
 Dialogue data was scraped to a CSV file using Beautiful Soup and a custom Python script.
 
 
 
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.png" alt="screenshot4" width="400"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot4" width="400"/>
 ## Screenshots 
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court1.PNG" alt="screenshot1" width="600"/>
