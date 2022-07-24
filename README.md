@@ -14,6 +14,10 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to prop
 
 ## Behind the scenes
 
+**TODO:** A more detailed documentation.
+
+**NOTE:** Turnabout Nincompoop requires certain assets in src/assets folder to run locally. This repository does <ins> not </ins> include any graphical, audio, or other similar type of assets. 
+
 Turnabout Nincompoop includes a backend and a frontend. The frontend is built on React with mulitple React libraries and frameworks:
 
 | Library | Use |
@@ -33,12 +37,22 @@ Turnabout Nincompoop includes a backend and a frontend. The frontend is built on
 | [react-slider](https://www.npmjs.com/package/react-slider) |Volume slider|
 | [react-awesome-button](https://www.npmjs.com/package/react-awesome-button) |Button components|
 
-The backend is used for storing and retrieving data from a NoSQL database (Apache CouchDB) and, more importantly, for generating all of the character dialogue. Dialogue generation is done by three different neural network language models that have been trained on character specific dialogue from all of the Ace Attorney games. Dialogue data was scraped to a CSV file using Beautiful Soup and a custom Python script. On top of the three language models used for generating dialogue, a fourth neural network (dockerized DeepMoji) is used to asses the most probable emojis for any generated text. Emojis and generated texts are then sent to the frontend where they are translated to different character animations.
+The backend is used for storing and retrieving data from a NoSQL database (Apache CouchDB) and, more importantly, for generating all of the character dialogue. Dialogue generation is done by three different neural network language models that have been trained on character specific dialogue from all of the Ace Attorney games. On top of the three language models used for generating dialogue, a fourth neural network (dockerized DeepMoji) is used to asses the most probable emojis for any generated text. Emojis and generated texts are then sent to the frontend where they are translated to different character animations.
+
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline3.png" alt="screenshot4" width="400"/>
+
+Text generation in Turnabout Nincompoop is, at least currently, non-responsive in that the language models only generate random text or continue a given prompt, but the generated text doesn't answer or respond to any previous text. At times the language models can still generate somewhat convincing yet nonsensical <sub>(or nincompoopish)</sub> conversations:
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot5" width="400"/>
+
+Dialogue data was scraped to a CSV file using Beautiful Soup and a custom Python script.
+
+
+
 
 ## Screenshots 
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court1.PNG" alt="screenshot1" width="600"/>
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="screenshot3" width="400"/>
-<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.png" alt="screenshot4" width="400"/>
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline3.png" alt="screenshot4" width="400"/>
 
 
