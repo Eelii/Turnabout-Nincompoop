@@ -10,6 +10,8 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to prop
 
 Available at: http://turnaboutnincompoop.com/
 
+**NOTE:** Backend online only during weekdays.
+
 <br/>
 
 <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/court2.PNG" alt="screenshot2" width="1000"/>
