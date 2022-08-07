@@ -18,7 +18,7 @@ Available at: http://turnaboutnincompoop.com/
 
 **TODO:** A more detailed documentation.
 
-**NOTE:** Turnabout Nincompoop requires certain assets in *src/assets* folder to run locally. This repository does <ins>not</ins> include any graphical, audio, or other similar type of assets. 
+**NOTE:** To run locally with *npm run*, Turnabout Nincompoop requires certain assets in *src/assets* folder. This repository does <ins>not</ins> include any graphical, audio, or other similar type of assets. 
 
 Turnabout Nincompoop includes a backend and a frontend. The frontend is built on React with mulitple React libraries and frameworks:
 
