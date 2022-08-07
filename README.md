@@ -47,8 +47,8 @@ Text generation in Turnabout Nincompoop is, at least currently, non-responsive i
 <br/>
 <br/>
 <p float="left">
-  <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.png" alt="timeline screenshot 1" width="400"/>
-  <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="timeline screenshot 2" width="400"/>
+  <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline2.png" alt="timeline screenshot 1" align="top" width="400"/>
+  <img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/timeline1.PNG" alt="timeline screenshot 2" align="top" width="400"/>
 </p>
 
 
