@@ -41,6 +41,7 @@ Turnabout Nincompoop includes a backend and a frontend. The frontend is built on
 
 The backend is used for storing and retrieving data from a NoSQL database (Apache CouchDB) and, more importantly, for generating all of the character dialogue. Dialogue generation is done by three different neural network language models that have been trained on character specific dialogue from all of the Ace Attorney games. On top of the three language models used for generating dialogue, a fourth neural network (dockerized DeepMoji) is used to asses the most probable emojis for any generated text. Emojis and generated texts are then sent to the frontend where they are translated to different character animations.
 
+<img src="https://github.com/Eelii/Turnabout-Nincompoop/blob/main/screenshots/diagram.PNG" alt="timeline screenshot 1" width="400"/>
 
 Text generation in Turnabout Nincompoop is, at least currently, non-responsive in that the language models only generate random text or continue a given prompt, but the generated text doesn't answer or respond to any previous text. At times, and with the help of a real human being, the language models can still generate somewhat convincing yet nonsensical <sub>(or nincompoopish)</sub> conversations:
 <br/>
