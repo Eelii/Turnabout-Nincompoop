@@ -10,7 +10,7 @@ Having got a guilty or non guilty verdict, the user is highly encouraged to prop
 
 Available at: http://turnaboutnincompoop.com/
 
-**NOTE:** Backend online only during weekdays.
+**NOTE:** Backend available only during weekdays.
 
 <br/>
 
